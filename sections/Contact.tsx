@@ -79,6 +79,8 @@ export default function Contact() {
                 key={s}
                 href="#"
                 data-magnetic
+                data-magnetic-pull="0.12"
+                data-magnetic-radius="20"
                 data-cursor="link"
                 className="type-mono text-dust no-underline transition-colors hover:text-cherenkov-300"
                 style={{ fontSize: "0.62rem" }}

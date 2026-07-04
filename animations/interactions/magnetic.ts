@@ -1,6 +1,7 @@
 /**
  * Magnetic physics for [data-magnetic] elements (Bible §8).
  * Element translates toward cursor within a proximity radius; label counter-translates.
+ * Per-element overrides: data-magnetic-radius, data-magnetic-pull (falls back to CURSOR defaults).
  */
 import { gsap } from "@/lib/gsap";
 import { CURSOR } from "@/constants/motion";
@@ -16,6 +17,27 @@ export function attachMagnetic(root: HTMLElement | Document = document): () => v
     const inner = el.querySelector<HTMLElement>("[data-magnetic-inner]");
     const xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3.out" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
+    const innerXTo = inner ? gsap.quickTo(inner, "x", { duration: 0.4, ease: "power3.out" }) : null;
+    const innerYTo = inner ? gsap.quickTo(inner, "y", { duration: 0.4, ease: "power3.out" }) : null;
+
+    // Per-element overrides so dense clusters (e.g. social links) can be weaker
+    // than a standalone CTA without changing the shared defaults.
+    const radius = el.dataset.magneticRadius
+      ? Number(el.dataset.magneticRadius)
+      : CURSOR.magneticRadius;
+    const pull = el.dataset.magneticPull
+      ? Number(el.dataset.magneticPull)
+      : CURSOR.magneticPull;
+
+    let isPulled = false;
+
+    const reset = (elastic: boolean) => {
+      isPulled = false;
+      const dur = elastic ? 0.9 : 0.4;
+      const ease = elastic ? "elastic.out(1,0.4)" : "power3.out";
+      gsap.to(el, { x: 0, y: 0, duration: dur, ease });
+      if (inner) gsap.to(inner, { x: 0, y: 0, duration: dur, ease });
+    };
 
     const onMove = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
@@ -24,25 +46,22 @@ export function attachMagnetic(root: HTMLElement | Document = document): () => v
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
       const dist = Math.hypot(dx, dy);
-      if (dist < CURSOR.magneticRadius + Math.max(r.width, r.height) / 2) {
-        xTo(dx * CURSOR.magneticPull);
-        yTo(dy * CURSOR.magneticPull);
+      const threshold = radius + Math.max(r.width, r.height) / 2;
+
+      if (dist < threshold) {
+        isPulled = true;
+        xTo(dx * pull);
+        yTo(dy * pull);
         if (inner) {
-          gsap.to(inner, {
-            x: dx * CURSOR.magneticPull * 0.5,
-            y: dy * CURSOR.magneticPull * 0.5,
-            duration: 0.4,
-            ease: "power3.out",
-          });
+          innerXTo?.(dx * pull * 0.5);
+          innerYTo?.(dy * pull * 0.5);
         }
+      } else if (isPulled) {
+        reset(false);
       }
     };
 
-    const onLeave = () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1,0.4)" });
-      if (inner)
-        gsap.to(inner, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1,0.4)" });
-    };
+    const onLeave = () => reset(true);
 
     window.addEventListener("pointermove", onMove, { passive: true });
     el.addEventListener("pointerleave", onLeave);

@@ -18,21 +18,21 @@ export const DURATION = {
 } as const;
 
 export const LENIS = {
-  lerp: 0.09,
-  wheelMultiplier: 1,
-  touchMultiplier: 1.4,
+  lerp: 0.15,
+  wheelMultiplier: 0.3,
+  touchMultiplier: 1.1,
 } as const;
 
 export const SCRUB = 1;
 
 /** Pin lengths (in viewport-heights) per scene, per tier. */
 export const PIN = {
-  hero: { desktop: 500, tablet: 400, mobile: 300 },
-  manifesto: { desktop: 300, tablet: 260, mobile: 220 },
-  forces: { desktop: 500, tablet: 400, mobile: 380 },
-  collisionEach: { desktop: 150, tablet: 140, mobile: 120 },
-  scale: { desktop: 400, tablet: 320, mobile: 280 },
-  contact: { desktop: 200, tablet: 180, mobile: 160 },
+  hero: { desktop: 2000, tablet: 400, mobile: 300 },
+  manifesto: { desktop: 2000, tablet: 260, mobile: 220 },
+  forces: { desktop: 2500, tablet: 400, mobile: 380 },
+  collisionEach: { desktop: 400, tablet: 140, mobile: 120 },
+  scale: { desktop: 2000, tablet: 320, mobile: 280 },
+  contact: { desktop: 2000, tablet: 180, mobile: 160 },
 } as const;
 
 export const CURSOR = {

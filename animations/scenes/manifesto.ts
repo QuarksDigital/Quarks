@@ -53,18 +53,18 @@ export function createManifestoScene({
     gsap.set(g[i], { z: -300 * depthScale, opacity: 0.12, filter: "blur(6px)" });
     tl.to(
       g[i],
-      { z: 0, opacity: 1, filter: "blur(0px)", duration: dur * 0.45 },
+      { z: 0, opacity: 1, filter: "blur(0px)", duration: dur * 0.15 },
       w[0],
     )
       .to(
         words,
-        { color: "#f2f5fa", duration: dur * 0.3, stagger: dur * 0.04 },
-        w[0] + dur * 0.15,
+        { color: "#f2f5fa", duration: dur * 0.12, stagger: dur * 0.015 },
+        w[0] + dur * 0.04,
       )
       .to(
         g[i],
-        { z: 200 * depthScale, opacity: 0.25, filter: "blur(2px)", duration: dur * 0.4 },
-        w[0] + dur * 0.6,
+        { z: 200 * depthScale, opacity: 0.25, filter: "blur(2px)", duration: dur * 0.15 },
+        w[0] + dur * 0.85,
       );
   });
 

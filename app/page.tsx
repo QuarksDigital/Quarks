@@ -8,7 +8,7 @@ import Contact from "@/sections/Contact";
 
 export default function Home() {
   return (
-    <main>
+    <main className="select-none">
       <Hero />
       <Manifesto />
       <Forces />

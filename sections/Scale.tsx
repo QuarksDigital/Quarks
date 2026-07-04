@@ -84,7 +84,7 @@ export default function Scale() {
       </div>
 
       <div className="absolute left-6 top-1/2 flex max-w-md -translate-y-1/2 flex-col gap-6 lg:left-24">
-        <p className="type-mono text-cherenkov-300">HOW MATTER GETS MADE</p>
+        <p className="type-mono text-cherenkov-300">HOW WE WORK</p>
         {SCALE_STEPS.map((s, i) => (
           <div
             key={s.name}

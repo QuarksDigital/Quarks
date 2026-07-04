@@ -133,11 +133,11 @@ export const COLLISIONS: readonly CollisionDef[] = [
 export const COLLISIONS_HUD = "S4 · COLLISIONS";
 
 export const SCALE_STEPS = [
-  { index: "01", name: "OBSERVE", line: "Research & insight — we find the particle." },
-  { index: "02", name: "BIND", line: "Strategy — force strong enough to hold an idea together." },
-  { index: "03", name: "COLLIDE", line: "Creative — where new matter is made." },
-  { index: "04", name: "ACCELERATE", line: "Launch & media — mass approaching light speed." },
-  { index: "05", name: "ORBIT", line: "Optimize & retain — audiences that never leave." },
+  { index: "01", name: "OBSERVE", line: "Research & insight - we find the particle." },
+  { index: "02", name: "BIND", line: "Strategy - force strong enough to hold an idea together." },
+  { index: "03", name: "COLLIDE", line: "Creative - where new ideas are made." },
+  { index: "04", name: "ACCELERATE", line: "Launch & media - mass approaching light speed." },
+  { index: "05", name: "ORBIT", line: "Optimize & retain - audiences that never leave." },
 ] as const;
 
 export const SCALE_HUD = "S5 · THE SCALE";
@@ -153,14 +153,14 @@ export const PROOF = {
 
 export const CONTACT = {
   hudLabel: "S7 · GRAVITY WELL",
-  headline: "Let's make matter.",
-  cta: "MAKE MATTER",
+  headline: "Let's Connect.",
+  cta: "LET'S CONNECT",
   rows: [
-    { label: "NEW BUSINESS", value: "hello@quarks.agency" },
-    { label: "EVERYTHING ELSE", value: "hi@quarks.agency" },
+    { label: "QUARKS", value: "quarksdigitalmarketing@gmail.com" },
+    { label: "QUESTIONS", value: "quarks.questions@gmail.com" },
   ],
-  socials: ["Instagram", "LinkedIn", "X", "Behance"],
-  backToTop: "COLLAPSE THE UNIVERSE",
+  socials: ["Instagram", "LinkedIn", "X"],
+  backToTop: "SCROLL UP",
   legal: "© 2026 QUARKS. All matter reserved.",
 } as const;
 
@@ -170,5 +170,5 @@ export const NAV = {
     { label: "Collisions", target: "#collisions" },
     { label: "Scale", target: "#scale" },
   ],
-  cta: "Make matter",
+  cta: "LET'S CONNECT",
 } as const;

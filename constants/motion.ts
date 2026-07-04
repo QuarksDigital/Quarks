@@ -27,12 +27,12 @@ export const SCRUB = 1;
 
 /** Pin lengths (in viewport-heights) per scene, per tier. */
 export const PIN = {
-  hero: { desktop: 2000, tablet: 400, mobile: 300 },
-  manifesto: { desktop: 2000, tablet: 260, mobile: 220 },
-  forces: { desktop: 2500, tablet: 400, mobile: 380 },
-  collisionEach: { desktop: 400, tablet: 140, mobile: 120 },
-  scale: { desktop: 2000, tablet: 320, mobile: 280 },
-  contact: { desktop: 2000, tablet: 180, mobile: 160 },
+  hero: { desktop: 2000, tablet: 2000, mobile: 1500 },
+  manifesto: { desktop: 2000, tablet: 2000, mobile: 1500 },
+  forces: { desktop: 2500, tablet: 2000, mobile: 1500 },
+  collisionEach: { desktop: 2000, tablet: 2000, mobile: 1500 },
+  scale: { desktop: 2000, tablet: 2000, mobile: 1500 },
+  contact: { desktop: 2000, tablet: 2000, mobile: 1500 },
 } as const;
 
 export const CURSOR = {

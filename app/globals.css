@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* QUARKS design tokens */
+@theme inline {
+  --color-void: #04040a;
+  --color-obsidian-900: #07070f;
+  --color-obsidian-800: #0b0c16;
+  --color-obsidian-700: #12141f;
+  --color-starlight: #f2f5fa;
+  --color-dust: #7c8598;
+  --color-cherenkov-300: #9ff1ff;
+  --color-cherenkov-500: #38dbff;
+  --color-cherenkov-700: #0e8fbf;
+  --color-whitehot: #e8fcff;
+
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+}
+
+:root {
+  --z-webgl: 0;
+  --z-scene: 10;
+  --z-hud: 40;
+  --z-nav: 50;
+  --z-cursor: 60;
+  --z-grain: 70;
+  --z-preloader: 80;
+
+  --ease-emergence: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-orbital: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --hairline: rgba(240, 244, 255, 0.07);
+  --hairline-bright: rgba(240, 244, 255, 0.16);
+}
+
+html {
+  background: var(--color-void);
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 219, 255, 0.25) transparent;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-starlight);
+  font-family: var(--font-body), system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+body[data-custom-cursor="true"],
+body[data-custom-cursor="true"] * {
+  cursor: none !important;
+}
+
+::selection {
+  background: rgba(56, 219, 255, 0.28);
+  color: var(--color-whitehot);
+}
+
+.type-display {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+.type-mono {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--hairline);
+  border-top-color: var(--hairline-bright);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-lit {
+  position: relative;
+  overflow: hidden;
+}
+.glass-lit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--lit, 0);
+  transition: opacity 0.5s var(--ease-emergence);
+  background: radial-gradient(
+    600px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(56, 219, 255, 0.09),
+    transparent 42%
+  );
+}
+
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

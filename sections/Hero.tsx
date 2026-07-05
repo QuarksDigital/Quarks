@@ -78,9 +78,9 @@ export default function Hero() {
           From invisible to inevitable
           <span className="text-cherenkov-500">.</span>
         </h1>
-        <p ref={subline} className="type-mono mt-6 text-dust">
+        {/* <p ref={subline} className="type-mono mt-6 text-dust">
           {SITE.subline} — {SITE.name}
-        </p>
+        </p> */}
       </div>
 
       <div

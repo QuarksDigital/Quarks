@@ -27,10 +27,22 @@ export default function Cursor() {
 
     document.body.dataset.customCursor = "true";
 
-    const dotX = gsap.quickTo(dot, "x", { duration: CURSOR.dotLerp, ease: "power3.out" });
-    const dotY = gsap.quickTo(dot, "y", { duration: CURSOR.dotLerp, ease: "power3.out" });
-    const ringX = gsap.quickTo(ring, "x", { duration: CURSOR.ringLerp, ease: "power3.out" });
-    const ringY = gsap.quickTo(ring, "y", { duration: CURSOR.ringLerp, ease: "power3.out" });
+    const dotX = gsap.quickTo(dot, "x", {
+      duration: CURSOR.dotLerp,
+      ease: "power3.out",
+    });
+    const dotY = gsap.quickTo(dot, "y", {
+      duration: CURSOR.dotLerp,
+      ease: "power3.out",
+    });
+    const ringX = gsap.quickTo(ring, "x", {
+      duration: CURSOR.ringLerp,
+      ease: "power3.out",
+    });
+    const ringY = gsap.quickTo(ring, "y", {
+      duration: CURSOR.ringLerp,
+      ease: "power3.out",
+    });
 
     let lastX = 0;
     let lastY = 0;
@@ -43,7 +55,15 @@ export default function Cursor() {
       const ringEl = ring;
       gsap.killTweensOf(ringEl, "width,height,opacity");
       const size =
-        v === "link" ? 48 : v === "hero" ? 56 : v === "drag" ? 64 : v === "media" ? 0 : 32;
+        v === "link"
+          ? 48
+          : v === "hero"
+            ? 56
+            : v === "drag"
+              ? 64
+              : v === "media"
+                ? 0
+                : 32;
       gsap.to(ringEl, {
         width: size,
         height: size,
@@ -73,8 +93,20 @@ export default function Cursor() {
       dotY(y);
       ringX(x);
       ringY(y);
-      gsap.to(triad, { x, y, duration: 0.4, ease: "power3.out", overwrite: "auto" });
-      gsap.to(label, { x: x + 18, y: y - 24, duration: 0.35, ease: "power3.out", overwrite: "auto" });
+      gsap.to(triad, {
+        x,
+        y,
+        duration: 0.4,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+      gsap.to(label, {
+        x: x + 18,
+        y: y - 24,
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
 
       const now = performance.now();
       const dt = Math.max(now - lastT, 1);
@@ -82,6 +114,10 @@ export default function Cursor() {
       const vy = (y - lastY) / dt;
       const speed = Math.hypot(vx, vy);
       const angle = (Math.atan2(vy, vx) * 180) / Math.PI;
+
+      gsap.set(dot, { xPercent: -50, yPercent: -50 });
+      gsap.set(ring, { xPercent: -50, yPercent: -50 });
+
       gsap.set(ring, {
         rotation: angle,
         scaleX: 1 + Math.min(speed * 0.18, 0.4),
@@ -108,8 +144,10 @@ export default function Cursor() {
     };
 
     const onDown = () => gsap.to(dot, { scale: 0.6, duration: 0.15 });
-    const onUp = () => gsap.to(dot, { scale: 1, duration: 0.3, ease: "elastic.out(1,0.4)" });
-    const onLeave = () => gsap.to([dot, ring, triad, label], { opacity: 0, duration: 0.2 });
+    const onUp = () =>
+      gsap.to(dot, { scale: 1, duration: 0.3, ease: "elastic.out(1,0.4)" });
+    const onLeave = () =>
+      gsap.to([dot, ring, triad, label], { opacity: 0, duration: 0.2 });
     const onEnter = () => gsap.to([dot, ring], { opacity: 1, duration: 0.2 });
 
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -132,12 +170,10 @@ export default function Cursor() {
     <div aria-hidden="true" className="contents">
       <div
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cherenkov-500"
+        className="pointer-events-none fixed left-0 top-0 h-1.5 w-1.5 rounded-full bg-cherenkov-500"
         style={{
           zIndex: "var(--z-cursor)",
           boxShadow: "0 0 12px 2px rgba(56,219,255,0.75)",
-          marginLeft: "-3px",
-          marginTop: "-3px",
         }}
       />
       <div
@@ -146,19 +182,21 @@ export default function Cursor() {
         style={{
           zIndex: "var(--z-cursor)",
           borderColor: "rgba(242,245,250,0.35)",
-          marginLeft: "-16px",
-          marginTop: "-16px",
         }}
       />
       <div
         ref={triadRef}
         className="pointer-events-none fixed left-0 top-0 opacity-0"
-        style={{ zIndex: "var(--z-cursor)", marginLeft: "-2px", marginTop: "-2px" }}
+        style={{
+          zIndex: "var(--z-cursor)",
+          marginLeft: "-2px",
+          marginTop: "-2px",
+        }}
       >
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="absolute h-[4px] w-[4px] rounded-full bg-cherenkov-300"
+            className="absolute h-1 w-1 rounded-full bg-cherenkov-300"
             style={{
               boxShadow: "0 0 8px 1px rgba(159,241,255,0.8)",
               animation: `quarks-orbit 1.6s linear infinite`,

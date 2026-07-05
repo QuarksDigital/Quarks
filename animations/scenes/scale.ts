@@ -35,14 +35,26 @@ export function createScaleScene({ refs, tier, reduced }: SceneBuildArgs<ScaleRe
   const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
 
   sh.forEach((shell, k) => {
+    // Zoom/spin drive the SVG <g> (vector, re-rasterised crisply every frame);
+    // fade stays on the wrapper div. Scaling the div instead pixellated the
+    // shells because the compositor stretched a cached bitmap of it.
+    const inner = shell.querySelector<SVGGElement>("[data-shell-inner]");
     const w0 = SCALE_SHELL_STEP * k;
     const w1 = Math.min(w0 + SCALE_SHELL_WINDOW, 1);
     const dur = w1 - w0;
     const dir = k % 2 === 0 ? 1 : -1;
-    gsap.set(shell, { scale: 0.02, opacity: 0, rotation: dir * -8 });
+
+    gsap.set(shell, { opacity: 0 });
+    if (inner) gsap.set(inner, { scale: 0.02, rotation: dir * -8, svgOrigin: "50 50" });
+
     tl.to(shell, { opacity: 1, duration: dur * 0.25, ease: "power1.out" }, w0)
-      .to(shell, { scale: 40, rotation: dir * 8, duration: dur, ease: "power2.in" }, w0)
       .to(shell, { opacity: 0, duration: dur * 0.3, ease: "power1.in" }, w1 - dur * 0.3);
+    if (inner)
+      tl.to(
+        inner,
+        { scale: 40, rotation: dir * 8, svgOrigin: "50 50", duration: dur, ease: "power2.in" },
+        w0,
+      );
   });
 
   stps.forEach((step, i) => {

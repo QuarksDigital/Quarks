@@ -36,13 +36,13 @@ const SYMBOL_PATHS: Record<string, string[]> = {
   ],
 
   presence: [
-    "M50 48 m-40 0 a40 40 0 1 0 80 0 a40 40 0 1 0 -80 0",
-    "M10 48 a40 13 0 1 0 80 0 a40 13 0 1 0 -80 0",
-    "M20 28 a30 9 0 1 0 60 0 a30 9 0 1 0 -60 0",
-    "M20 68 a30 9 0 1 0 60 0 a30 9 0 1 0 -60 0",
-    "M50 8 Q64 48 50 88 M50 8 Q36 48 50 88",
-    "M50 48 m-50 0 a50 50 0 1 0 100 0 a50 50 0 1 0 -100 0",
-    "M50 28 m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0",
+    "M50 50 m-40 0 a40 40 0 1 0 80 0 a40 40 0 1 0 -80 0",
+    "M10 50 a40 13 0 1 0 80 0 a40 13 0 1 0 -80 0",
+    "M20 30 a30 9 0 1 0 60 0 a30 9 0 1 0 -60 0",
+    "M20 70 a30 9 0 1 0 60 0 a30 9 0 1 0 -60 0",
+    "M50 10 Q64 50 50 90 M50 10 Q36 50 50 90",
+    "M50 50 m-48 0 a48 48 0 1 0 96 0 a48 48 0 1 0 -96 0",
+    "M50 30 m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0",
   ],
 };
 
@@ -104,7 +104,7 @@ export default function Forces() {
           className="absolute inset-0 flex flex-col items-center justify-center gap-6 text-center"
         >
           <p className="type-mono text-cherenkov-300">
-            PHYSICS HAS EXACTLY FOUR FUNDAMENTAL FORCES
+            THE UNIVERSE HAS FOUR FUNDAMENTAL FORCES
           </p>
           <h2
             className="type-display text-starlight"
@@ -130,7 +130,7 @@ export default function Forces() {
             >
               <svg
                 viewBox="0 0 100 100"
-                className="h-full w-full"
+                className="h-full w-full overflow-visible"
                 fill="none"
                 aria-hidden="true"
               >

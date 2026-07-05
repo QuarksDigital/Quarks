@@ -137,11 +137,11 @@ export const COLLISIONS: readonly CollisionDef[] = [
 export const COLLISIONS_HUD = "S4 · COLLISIONS";
 
 export const SCALE_STEPS = [
-  { index: "01", name: "OBSERVE", line: "Research & insight - Market analysis." },
+  { index: "01", name: "OBSERVE", line: "Research & Insight - Market analysis." },
   { index: "02", name: "BIND", line: "Strategy - that holds ideas together." },
-  { index: "03", name: "COLLIDE", line: "Creative - where new ideas are made." },
-  { index: "04", name: "ACCELERATE", line: "Launch & media - exposure beyond measure." },
-  { index: "05", name: "ORBIT", line: "Optimize & retain - audiences that never leave." },
+  { index: "03", name: "COLLIDE", line: "Creativity - where new ideas are made." },
+  { index: "04", name: "ACCELERATE", line: "Launch & Promote - exposure beyond measure." },
+  { index: "05", name: "ORBIT", line: "Optimize & Retain - audiences that never leave." },
 ] as const;
 
 export const SCALE_HUD = "S5 · THE SCALE";
@@ -170,9 +170,9 @@ export const CONTACT = {
 
 export const NAV = {
   links: [
-    { label: "Forces", target: "#forces" },
-    { label: "Collisions", target: "#collisions" },
-    { label: "Scale", target: "#scale" },
+    { label: "Excellence", target: "#forces" },
+    { label: "Works", target: "#collisions" },
+    { label: "Process", target: "#scale" },
   ],
   cta: "LET'S CONNECT",
 } as const;

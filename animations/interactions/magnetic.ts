@@ -41,6 +41,19 @@ export function attachMagnetic(root: HTMLElement | Document = document): () => v
 
     const onMove = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
+
+      // Don't attract an element that's scrolled/animated off-screen (e.g. the
+      // nav pill hidden on downscroll) — otherwise the pull drags it back into view.
+      const offscreen =
+        r.bottom <= 0 ||
+        r.top >= window.innerHeight ||
+        r.right <= 0 ||
+        r.left >= window.innerWidth;
+      if (offscreen) {
+        if (isPulled) reset(false);
+        return;
+      }
+
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
       const dx = e.clientX - cx;

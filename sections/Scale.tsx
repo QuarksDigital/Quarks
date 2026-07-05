@@ -41,31 +41,36 @@ export default function Scale() {
           <div
             key={name}
             ref={(el) => { shellRefs.current[k] = el; }}
-            className="absolute h-[70vmin] w-[70vmin] will-change-transform"
+            className="absolute h-[70vmin] w-[70vmin] will-change-[opacity]"
             aria-hidden="true"
           >
-            <svg viewBox="0 0 100 100" className="h-full w-full" fill="none">
-              {SHELL_RINGS[name].map((r, i) => (
-                <circle
-                  key={i}
-                  cx="50"
-                  cy="50"
-                  r={r}
-                  stroke={i === 0 ? "rgba(159,241,255,0.7)" : "rgba(56,219,255,0.35)"}
-                  strokeWidth={i === 0 ? 0.5 : 0.3}
-                  strokeDasharray={k > 2 ? "1.5 2.5" : undefined}
-                />
-              ))}
-              {name === "cosmos" &&
-                Array.from({ length: 40 }, (_, i) => (
+            <svg viewBox="0 0 100 100" className="h-full w-full overflow-visible" fill="none">
+              {/* Zoom + spin are applied to this <g> (see animations/scenes/scale.ts)
+                  so the vectors re-rasterise crisply instead of the compositor
+                  stretching a cached bitmap of the wrapper div. */}
+              <g data-shell-inner>
+                {SHELL_RINGS[name].map((r, i) => (
                   <circle
-                    key={`s${i}`}
-                    cx={(i * 37) % 100}
-                    cy={(i * 61) % 100}
-                    r="0.35"
-                    fill="rgba(232,252,255,0.8)"
+                    key={i}
+                    cx="50"
+                    cy="50"
+                    r={r}
+                    stroke={i === 0 ? "rgba(159,241,255,0.7)" : "rgba(56,219,255,0.35)"}
+                    strokeWidth={i === 0 ? 0.5 : 0.3}
+                    strokeDasharray={k > 2 ? "1.5 2.5" : undefined}
                   />
                 ))}
+                {name === "cosmos" &&
+                  Array.from({ length: 40 }, (_, i) => (
+                    <circle
+                      key={`s${i}`}
+                      cx={(i * 37) % 100}
+                      cy={(i * 61) % 100}
+                      r="0.35"
+                      fill="rgba(232,252,255,0.8)"
+                    />
+                  ))}
+              </g>
             </svg>
             <span
               className="type-mono absolute left-1/2 top-2 -translate-x-1/2 text-dust"

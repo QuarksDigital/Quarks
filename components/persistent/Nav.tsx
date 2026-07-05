@@ -96,6 +96,8 @@ export default function Nav() {
       <button
         type="button"
         data-magnetic
+        data-magnetic-radius="70"
+        data-magnetic-pull="0.2"
         data-cursor="link"
         onClick={() => go("#contact")}
         className="type-mono rounded-full border border-cherenkov-700 px-4 py-1.5 text-cherenkov-300"

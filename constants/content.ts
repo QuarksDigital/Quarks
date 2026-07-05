@@ -187,25 +187,44 @@ export const FOUNDERS: readonly FounderDef[] = [
   {
     id: "saksham",
     name: "SAKSHAM",
-    role: "CO-FOUNDER · CREATIVE & BUILD",
+    role: "CO-FOUNDER · CHIEF TECHNOLOGY OFFICER",
     details: [
-      "Design, development & 3D experiences",
-      "Turns scattered ideas into inevitable brands",
-      "Obsessed with the physics of attention",
+      "Development & 3D experiences.",
+      "Obsessed with the physics of attention.",
+      '"Believe in yourself and the world shall too." ~Saksham Sinha',
     ],
     photoFull: "/founders/saksham.jpg",
   },
-  // ── PLACEHOLDER founder so the carousel is visible with one real profile.
-  // Replace with your real co-founder (drop a photo in /public/founders and
-  // point photoFull at it), or delete this entry entirely.
   {
     id: "founder-2",
-    name: "YOUR CO-FOUNDER",
-    role: "CO-FOUNDER · STRATEGY & GROWTH",
+    name: "VINAYAK",
+    role: "CO-FOUNDER · GROWTH EXPERT",
     details: [
-      "Replace this placeholder with the real profile",
-      "Add a landscape photo to /public/founders",
-      "The carousel scales to any number of founders",
+      "Market research and growth strategy.",
+      "Love for data-driven marketing and analytics.",
+      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
+    ],
+    photoFull: "/founders/saksham.jpg",
+  },
+  {
+    id: "founder-3",
+    name: "TRISHA",
+    role: "CO-FOUNDER · CREATIVE HEAD",
+    details: [
+      "Market research and growth strategy.",
+      "Love for data-driven marketing and analytics.",
+      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
+    ],
+    photoFull: "/founders/saksham.jpg",
+  },
+  {
+    id: "founder-4",
+    name: "SHUVAM",
+    role: "CO-FOUNDER · CREATIVE HEAD",
+    details: [
+      "Market research and growth strategy.",
+      "Love for data-driven marketing and analytics.",
+      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
     ],
     photoFull: "/founders/saksham.jpg",
   },
@@ -214,7 +233,7 @@ export const FOUNDERS: readonly FounderDef[] = [
 export const ABOUT = {
   hudLabel: "S8 · THE OBSERVERS",
   eyebrow: "ABOUT US",
-  introTitle: "We compile scattered skills into a single force.",
+  introTitle: "Design, Development & 3D Experiences. We compile plathera of skills into one coherent force.",
   introBody:
     "Quarks is a small, obsessive team of specialists — strategists, designers, engineers and storytellers. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
   triggerLabel: "ABOUT US",

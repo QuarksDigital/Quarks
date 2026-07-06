@@ -2,7 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { useSceneTrigger } from "@/hooks/useSceneTrigger";
-import { createContactScene, type ContactRefs } from "@/animations/scenes/contact";
+import {
+  createContactScene,
+  type ContactRefs,
+} from "@/animations/scenes/contact";
 import { attachMagnetic } from "@/animations/interactions/magnetic";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { getLenis } from "@/components/providers/SmoothScrollProvider";
@@ -17,12 +20,24 @@ export default function Contact() {
   const cta = useRef<HTMLDivElement>(null);
 
   useSceneTrigger<ContactRefs>((args) => createContactScene(args), {
-    get section() { return section.current; },
-    get pinned() { return pinned.current; },
-    get headline() { return headline.current; },
-    get rows() { return rows.current; },
-    get footer() { return footer.current; },
-    get cta() { return cta.current; },
+    get section() {
+      return section.current;
+    },
+    get pinned() {
+      return pinned.current;
+    },
+    get headline() {
+      return headline.current;
+    },
+    get rows() {
+      return rows.current;
+    },
+    get footer() {
+      return footer.current;
+    },
+    get cta() {
+      return cta.current;
+    },
   });
 
   useEffect(() => {
@@ -38,7 +53,10 @@ export default function Contact() {
       className="relative"
       style={{ zIndex: "var(--z-scene)" }}
     >
-      <div ref={pinned} className="flex h-screen flex-col items-center justify-center px-6">
+      <div
+        ref={pinned}
+        className="flex h-screen flex-col items-center justify-center px-6"
+      >
         <h2
           ref={headline}
           className="type-display text-center text-starlight"
@@ -48,7 +66,9 @@ export default function Contact() {
         </h2>
 
         <div ref={cta} className="mt-12">
-          <MagneticButton href={`mailto:${SITE.emailNew}`}>{CONTACT.cta}</MagneticButton>
+          <MagneticButton href={`mailto:${SITE.emailNew}`}>
+            {CONTACT.cta}
+          </MagneticButton>
         </div>
 
         <div ref={rows} className="mt-14 flex flex-col items-center gap-3">
@@ -95,17 +115,20 @@ export default function Contact() {
           <div className="flex gap-6">
             {CONTACT.socials.map((s) => (
               <a
-                key={s}
-                href="#"
+                key={s.name}
+                href={s.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 data-magnetic
                 data-magnetic-pull="0.12"
                 data-magnetic-radius="20"
                 data-cursor="link"
                 className="type-mono text-dust no-underline transition-colors hover:text-cherenkov-300"
                 style={{ fontSize: "0.62rem" }}
-                onClick={(e) => e.preventDefault()}
               >
-                <span data-magnetic-inner className="inline-block">{s}</span>
+                <span data-magnetic-inner className="inline-block">
+                  {s.name}
+                </span>
               </a>
             ))}
           </div>

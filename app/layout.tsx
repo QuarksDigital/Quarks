@@ -12,7 +12,7 @@ import SectionHUD from "@/components/persistent/SectionHUD";
 import BackgroundAudio from "@/components/persistent/BackgroundAudio";
 import { SITE, FOUNDERS } from "@/constants/content";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quarks.agency";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quarks-rosy.vercel.app";
 const TITLE = `${SITE.name} — ${SITE.tagline}`;
 
 const spaceGrotesk = Space_Grotesk({
@@ -57,9 +57,6 @@ export const metadata: Metadata = {
     "x",
     "social media",
     "Quarks",
-    "near me",
-    "digital marketing",
-    "digital marketing near me",
   ],
   authors: [{ name: SITE.name }],
   creator: SITE.name,

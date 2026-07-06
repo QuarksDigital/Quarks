@@ -133,11 +133,27 @@ export const COLLISIONS: readonly CollisionDef[] = [
 export const COLLISIONS_HUD = "S4 · COLLISIONS";
 
 export const SCALE_STEPS = [
-  { index: "01", name: "OBSERVE", line: "Research & Insight - Market analysis." },
+  {
+    index: "01",
+    name: "OBSERVE",
+    line: "Research & Insight - Market analysis.",
+  },
   { index: "02", name: "BIND", line: "Strategy - that holds ideas together." },
-  { index: "03", name: "COLLIDE", line: "Creativity - where new ideas are made." },
-  { index: "04", name: "ACCELERATE", line: "Launch & Promote - exposure beyond measure." },
-  { index: "05", name: "ORBIT", line: "Optimize & Retain - audiences that never leave." },
+  {
+    index: "03",
+    name: "COLLIDE",
+    line: "Creativity - where new ideas are made.",
+  },
+  {
+    index: "04",
+    name: "ACCELERATE",
+    line: "Launch & Promote - exposure beyond measure.",
+  },
+  {
+    index: "05",
+    name: "ORBIT",
+    line: "Optimize & Retain - audiences that never leave.",
+  },
 ] as const;
 
 export const SCALE_HUD = "S5 · THE SCALE";
@@ -159,7 +175,14 @@ export const CONTACT = {
     { label: "QUARKS", value: "quarksdigitalmarketing@gmail.com" },
     { label: "QUESTIONS", value: "quarks.questions@gmail.com" },
   ],
-  socials: ["Instagram", "LinkedIn", "X"],
+  socials: [
+    { name: "Instagram", link: "https://www.instagram.com/quarksdigital" },
+    {
+      name: "LinkedIn",
+      link: "https://www.linkedin.com/company/quarksdigital/",
+    },
+    // { name: "X", link: "#" },
+  ],
   backToTop: "SCROLL UP",
   legal: "© 2026 QUARKS. All matter reserved.",
 } as const;
@@ -236,7 +259,8 @@ export const FOUNDERS: readonly FounderDef[] = [
 export const ABOUT = {
   hudLabel: "S8 · THE OBSERVERS",
   eyebrow: "ABOUT US",
-  introTitle: "UI/UX Design, 3D Experiences & Full Stack Development. We do it all. We compile a plathera of skills into one coherent force.",
+  introTitle:
+    "UI/UX Design, 3D Experiences & Full Stack Development. We do it all. We compile a plathera of skills into one coherent force.",
   introBody:
     "Quarks is a small, obsessive team of specialists - strategists, designers, engineers and storytellers. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
   triggerLabel: "ABOUT US",

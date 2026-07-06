@@ -354,7 +354,7 @@ export default function About() {
                   src={f.photoFull}
                   alt={f.name}
                   className="h-full w-full object-cover"
-                  style={{ objectPosition: "30% 38%" }}
+                  style={{ objectPosition: f.objectPos ?? "30% 38%" }}
                   draggable={false}
                 />
                 <div className="dot-film absolute inset-0" />
@@ -404,7 +404,7 @@ export default function About() {
               aria-label="Previous founder"
               data-cursor="link"
               onClick={() => step(-1)}
-              className="absolute left-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
+              className="absolute bottom-24 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -415,7 +415,7 @@ export default function About() {
               aria-label="Next founder"
               data-cursor="link"
               onClick={() => step(1)}
-              className="absolute right-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
+              className="absolute bottom-24 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />

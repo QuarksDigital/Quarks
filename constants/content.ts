@@ -175,6 +175,8 @@ export interface FounderDef {
   details: string[];
   /** full landscape photo in /public/founders — face toward the left */
   photoFull: string;
+  /** optional CSS object-position for the photo crop (default "30% 38%") */
+  objectPos?: string;
   /** optional mono index label; auto-filled from position if omitted */
   index?: string;
 }
@@ -189,7 +191,7 @@ export const FOUNDERS: readonly FounderDef[] = [
     name: "SAKSHAM",
     role: "CO-FOUNDER · CHIEF TECHNOLOGY OFFICER",
     details: [
-      "Development & 3D experiences.",
+      "Development & Implementation.",
       "Obsessed with the physics of attention.",
       '"Believe in yourself and the world shall too." ~Saksham Sinha',
     ],
@@ -211,29 +213,30 @@ export const FOUNDERS: readonly FounderDef[] = [
     name: "TRISHA",
     role: "CO-FOUNDER · CREATIVE HEAD",
     details: [
-      "Market research and growth strategy.",
-      "Love for data-driven marketing and analytics.",
-      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
+      "Creative direction and brand strategy.",
+      "Love for storytelling and visual communication.",
+      '"It is not the eye that sees the beauty but the heart that feels it." ~Trisha Jain',
     ],
-    photoFull: "/founders/saksham.webp",
+    photoFull: "/founders/trisha.webp",
   },
   {
     id: "founder-4",
     name: "SHUVAM",
-    role: "CO-FOUNDER · CREATIVE HEAD",
+    role: "CO-FOUNDER · PRODUCT HEAD",
     details: [
-      "Market research and growth strategy.",
-      "Love for data-driven marketing and analytics.",
-      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
+      "Product design and feature development.",
+      "Love for creating user-centric products and experiences.",
+      '"The best way to predict the future is to create it." ~Shuvam Kumar Sahu',
     ],
     photoFull: "/founders/shuvam.webp",
+    objectPos: "10% 40%",
   },
 ] as const;
 
 export const ABOUT = {
   hudLabel: "S8 · THE OBSERVERS",
   eyebrow: "ABOUT US",
-  introTitle: "Design, Development & 3D Experiences. We compile plathera of skills into one coherent force.",
+  introTitle: "UI/UX Design, 3D Experiences & Full Stack Development. We do it all. We compile a plathera of skills into one coherent force.",
   introBody:
     "Quarks is a small, obsessive team of specialists - strategists, designers, engineers and storytellers. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
   triggerLabel: "ABOUT US",

@@ -5,10 +5,10 @@ export const SITE = {
   tagline: "From invisible to inevitable.",
   subline: "A DIGITAL MARKETING AGENCY",
   description:
-    "Quarks is a digital marketing agency that engineers attention at the fundamental level. One continuous journey from a single particle to an infinite digital universe.",
+    "Quarks is a digital marketing agency that engineers attention at the fundamental level. We guarantee permanent impact.",
   emailNew: "quarksdigitalmarketing@gmail.com",
   emailElse: "quarks.questions@gmail.com",
-  coordinates: "51.5074° N · 0.1278° W",
+  coordinates: "20.296059° N · 85.824539° E",
 } as const;
 
 export const HERO = {
@@ -56,9 +56,9 @@ export const FORCES: readonly ForceDef[] = [
     id: "performance",
     index: "FORCE 03 / 04",
     name: "PERFORMANCE",
-    service: "Strategy & Transformation",
-    line: "The force that changes one thing into another.",
-    tags: ["Brand strategy", "Rebrands", "Go-to-market"],
+    service: "High FPS & Optimization",
+    line: "Experiences that run fast, smooth, and seamless.",
+    tags: ["High FPS", "Low LCP", "Optimization"],
     symbol: "performance",
   },
   {
@@ -93,7 +93,7 @@ export const COLLISIONS: readonly CollisionDef[] = [
     client: "HELIOS",
     sector: "Consumer EV",
     year: "2025",
-    image: "/media/cases/helios.png",
+    image: "/media/cases/helios.webp",
     metrics: [
       { value: 412, prefix: "+", suffix: "%", label: "Organic reach" },
       { value: 2.4, suffix: "M", label: "Launch views" },
@@ -107,7 +107,7 @@ export const COLLISIONS: readonly CollisionDef[] = [
     client: "FlaminCo",
     sector: "Dating",
     year: "2025",
-    image: "/media/cases/kute.png",
+    image: "/media/cases/kute.webp",
     metrics: [
       { value: 1, suffix: "M", label: "Installs / 90 days" },
       { value: 4.8, suffix: "★", label: "Store rating" },
@@ -121,7 +121,7 @@ export const COLLISIONS: readonly CollisionDef[] = [
     client: "ATLAS",
     sector: "Streetwear",
     year: "2026",
-    image: "/media/cases/atlas.png",
+    image: "/media/cases/atlas.webp",
     metrics: [
       { value: 18, suffix: "min", label: "Sellout time" },
       { value: 320, suffix: "K", label: "Waitlist" },
@@ -193,7 +193,7 @@ export const FOUNDERS: readonly FounderDef[] = [
       "Obsessed with the physics of attention.",
       '"Believe in yourself and the world shall too." ~Saksham Sinha',
     ],
-    photoFull: "/founders/saksham.jpg",
+    photoFull: "/founders/saksham.webp",
   },
   {
     id: "founder-2",
@@ -204,7 +204,7 @@ export const FOUNDERS: readonly FounderDef[] = [
       "Love for data-driven marketing and analytics.",
       '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
     ],
-    photoFull: "/founders/vinayak.jpg",
+    photoFull: "/founders/vinayak.webp",
   },
   {
     id: "founder-3",
@@ -215,7 +215,7 @@ export const FOUNDERS: readonly FounderDef[] = [
       "Love for data-driven marketing and analytics.",
       '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
     ],
-    photoFull: "/founders/saksham.jpg",
+    photoFull: "/founders/saksham.webp",
   },
   {
     id: "founder-4",
@@ -226,7 +226,7 @@ export const FOUNDERS: readonly FounderDef[] = [
       "Love for data-driven marketing and analytics.",
       '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
     ],
-    photoFull: "/founders/shuvam.jpg",
+    photoFull: "/founders/shuvam.webp",
   },
 ] as const;
 
@@ -235,7 +235,7 @@ export const ABOUT = {
   eyebrow: "ABOUT US",
   introTitle: "Design, Development & 3D Experiences. We compile plathera of skills into one coherent force.",
   introBody:
-    "Quarks is a small, obsessive team of specialists — strategists, designers, engineers and storytellers. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
+    "Quarks is a small, obsessive team of specialists - strategists, designers, engineers and storytellers. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
   triggerLabel: "ABOUT US",
   closeLabel: "CLOSE",
 } as const;

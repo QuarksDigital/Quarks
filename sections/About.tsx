@@ -3,11 +3,12 @@
 /**
  * S8 — About. A founder carousel.
  *   • keeps the photo-left / details-right / dot-film design
- *   • desktop: the cursor becomes a directional arrow — click the right half
- *     for the next founder, the left half for the previous (smooth slide)
+ *   • desktop: a physics-based directional cursor with a 7s progress ring —
+ *     it springs after the pointer with inertia + velocity squash/stretch, and
+ *     the arrow does a smooth 3D flip between next (>) and previous (<).
+ *     Hovering a half fills the ring and auto-advances; clicking advances now.
  *   • mobile / tablet: left & right arrow buttons (and swipe)
- *   • a loader at the bottom auto-advances every 7s while the section is not
- *     hovered; manual navigation resets it
+ *   • a bottom loader auto-advances every 7s on touch / when not hovered
  * Add founders by appending to FOUNDERS — everything scales automatically.
  */
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from "react";
@@ -19,6 +20,8 @@ import { ABOUT, FOUNDERS } from "@/constants/content";
 import { isTouchDevice, prefersReducedMotion } from "@/utils/dom";
 
 const AUTO_MS = 7000;
+const RING_R = 30;
+const RING_C = 2 * Math.PI * RING_R;
 
 export default function About() {
   const n = FOUNDERS.length;
@@ -26,7 +29,9 @@ export default function About() {
   const stage = useRef<HTMLDivElement>(null);
   const slides = useRef<(HTMLDivElement | null)[]>([]);
   const arrow = useRef<HTMLDivElement>(null);
+  const chevron = useRef<SVGSVGElement>(null);
   const bar = useRef<HTMLSpanElement>(null);
+  const ring = useRef<SVGCircleElement>(null);
 
   const indexRef = useRef(0);
   const animating = useRef(false);
@@ -38,12 +43,16 @@ export default function About() {
   const swipeX = useRef(0);
 
   const [active, setActive] = useState(0);
-  const [dirIcon, setDirIcon] = useState<1 | -1>(1);
+
+  const resetRing = useCallback(() => {
+    if (ring.current) ring.current.style.strokeDashoffset = String(RING_C);
+  }, []);
 
   const resetTimer = useCallback(() => {
     acc.current = 0;
     if (bar.current) gsap.set(bar.current, { scaleX: 0 });
-  }, []);
+    resetRing();
+  }, [resetRing]);
 
   const go = useCallback(
     (target: number, d: 1 | -1) => {
@@ -81,7 +90,7 @@ export default function About() {
           det.children,
           { autoAlpha: 0, y: 26, filter: "blur(10px)" },
           { autoAlpha: 1, y: 0, filter: "blur(0px)", stagger: 0.08, duration: 0.55, ease: "power2.out" },
-          d === 1 ? 0.4 : 0.4,
+          0.4,
         );
       }
     },
@@ -115,7 +124,10 @@ export default function About() {
     };
   }, []);
 
-  // auto-advance loader (pauses while hovered / off-screen / animating)
+  // auto-advance loader.
+  //  - desktop: the countdown fills the cursor ring while the pointer hovers the
+  //    stage; on completion it advances in the hovered direction.
+  //  - touch / non-desktop: the bottom bar fills while the section is in view.
   useEffect(() => {
     if (n < 2) return;
     let raf = 0;
@@ -125,46 +137,84 @@ export default function About() {
       raf = requestAnimationFrame(tick);
       const dt = t - last;
       last = t;
-      const running = inView.current && !hovered.current && !animating.current && !reduced;
-      if (!running) return;
-      acc.current += dt;
-      if (bar.current) gsap.set(bar.current, { scaleX: Math.min(acc.current / AUTO_MS, 1) });
-      if (acc.current >= AUTO_MS) {
-        acc.current = 0;
-        step(1);
+      if (reduced) return;
+
+      if (desk.current) {
+        if (!hovered.current || animating.current) return;
+        acc.current += dt;
+        const p = Math.min(acc.current / AUTO_MS, 1);
+        if (ring.current) ring.current.style.strokeDashoffset = String(RING_C * (1 - p));
+        if (acc.current >= AUTO_MS) {
+          acc.current = 0;
+          step(dir.current);
+        }
+      } else {
+        if (!inView.current || animating.current) return;
+        acc.current += dt;
+        if (bar.current) gsap.set(bar.current, { scaleX: Math.min(acc.current / AUTO_MS, 1) });
+        if (acc.current >= AUTO_MS) {
+          acc.current = 0;
+          step(1);
+        }
       }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [n, step]);
 
-  // desktop directional-arrow cursor
+  // desktop directional cursor: spring inertia + squash/stretch + 3D arrow flip
   useEffect(() => {
     const stg = stage.current;
     const ar = arrow.current;
+    const chev = chevron.current;
     desk.current = window.innerWidth >= 1024 && !isTouchDevice() && !prefersReducedMotion();
     if (!stg || !ar || !desk.current) return;
 
-    gsap.set(ar, { xPercent: -50, yPercent: -50, autoAlpha: 0, scale: 0.6 });
-    const ax = gsap.quickTo(ar, "x", { duration: 0.18, ease: "power3.out" });
-    const ay = gsap.quickTo(ar, "y", { duration: 0.18, ease: "power3.out" });
+    gsap.set(ar, { xPercent: -50, yPercent: -50, autoAlpha: 0 });
+    resetRing();
+
+    let tx = window.innerWidth / 2;
+    let ty = window.innerHeight / 2;
+    let px = tx;
+    let py = ty;
+    let vx = 0;
+    let vy = 0;
+    let visScale = 0.6;
+    let started = false;
+
+    const flip = (d: 1 | -1) => {
+      if (!chev) return;
+      gsap.to(chev, { rotationY: d === 1 ? 0 : 180, duration: 0.55, ease: "back.out(1.7)", overwrite: "auto" });
+      gsap.fromTo(chev, { scale: 0.65 }, { scale: 1, duration: 0.5, ease: "back.out(2.2)" });
+    };
 
     const onMove = (e: PointerEvent) => {
-      ax(e.clientX);
-      ay(e.clientY);
+      tx = e.clientX;
+      ty = e.clientY;
+      if (!started) {
+        px = tx;
+        py = ty;
+        started = true;
+      }
       const d: 1 | -1 = e.clientX > window.innerWidth / 2 ? 1 : -1;
       if (d !== dir.current) {
         dir.current = d;
-        setDirIcon(d);
+        acc.current = 0;
+        resetRing();
+        flip(d);
       }
     };
     const onEnter = () => {
       hovered.current = true;
-      gsap.to(ar, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "expo.out" });
+      acc.current = 0;
+      resetRing();
+      gsap.to(ar, { autoAlpha: 1, duration: 0.3, ease: "expo.out" });
     };
     const onLeave = () => {
       hovered.current = false;
-      gsap.to(ar, { autoAlpha: 0, scale: 0.6, duration: 0.25, ease: "power2.in" });
+      acc.current = 0;
+      resetRing();
+      gsap.to(ar, { autoAlpha: 0, duration: 0.25, ease: "power2.in" });
     };
     const onClick = (e: MouseEvent) => {
       if (animating.current) return;
@@ -172,23 +222,47 @@ export default function About() {
       step(dir.current);
     };
 
+    // spring integrator
+    const STIFF = 0.2;
+    const DAMP = 0.74;
+    let raf = 0;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      vx = (vx + (tx - px) * STIFF) * DAMP;
+      vy = (vy + (ty - py) * STIFF) * DAMP;
+      px += vx;
+      py += vy;
+      const speed = Math.hypot(vx, vy);
+      const stretch = Math.min(speed * 0.02, 0.4);
+      const angle = Math.atan2(vy, vx) * (180 / Math.PI);
+      const rot = Math.max(-16, Math.min(16, angle * stretch * 0.8));
+      visScale += ((hovered.current ? 1 : 0.6) - visScale) * 0.2;
+      gsap.set(ar, {
+        x: px,
+        y: py,
+        xPercent: -50,
+        yPercent: -50,
+        rotation: rot,
+        scaleX: (1 + stretch) * visScale,
+        scaleY: (1 - stretch * 0.55) * visScale,
+      });
+    };
+    raf = requestAnimationFrame(tick);
+
     stg.addEventListener("pointermove", onMove);
     stg.addEventListener("pointerenter", onEnter);
     stg.addEventListener("pointerleave", onLeave);
     stg.addEventListener("click", onClick);
     return () => {
+      cancelAnimationFrame(raf);
       stg.removeEventListener("pointermove", onMove);
       stg.removeEventListener("pointerenter", onEnter);
       stg.removeEventListener("pointerleave", onLeave);
       stg.removeEventListener("click", onClick);
     };
-  }, [step]);
+  }, [step, resetRing]);
 
-  // Lenis snap: when the user settles near the About section, ease it to fill
-  // the screen. Listens on window scroll (Lenis scrolls the real document) and
-  // resolves Lenis lazily, so it works even though this child mounts before the
-  // provider. Only fires on scroll-idle, so active scrolling is never blocked;
-  // scrolling further (up or down) leaves the snap band and releases it.
+  // Lenis snap: settle the About section to the screen on scroll-idle.
   useEffect(() => {
     const el = section.current;
     if (!el || prefersReducedMotion()) return;
@@ -251,11 +325,11 @@ export default function About() {
         {/* header */}
         <div className="pointer-events-none absolute left-6 top-8 z-20 md:left-16 md:top-12">
           <p className="type-mono text-cherenkov-300">{ABOUT.eyebrow}</p>
-          <p className="mt-2 max-w-xs text-sm text-dust md:max-w-sm">{ABOUT.introTitle}</p>
+          <p className="mt-2 max-w-xs text-sm text-[#ffffff]/60 md:max-w-sm">{ABOUT.introTitle}</p>
         </div>
         {n > 1 && (
           <div className="pointer-events-none absolute right-6 top-8 z-20 md:right-16 md:top-12">
-            <p className="type-mono text-dust">
+            <p className="type-mono text-[#ffffff]/60">
               <span className="text-starlight">{String(active + 1).padStart(2, "0")}</span> /{" "}
               {String(n).padStart(2, "0")}
             </p>
@@ -311,7 +385,7 @@ export default function About() {
                   <p className="type-mono mt-4 text-cherenkov-300">{f.role}</p>
                   <div className="mt-8 space-y-3">
                     {f.details.map((d) => (
-                      <p key={d} className="max-w-sm text-dust" style={{ lineHeight: 1.65 }}>
+                      <p key={d} className="max-w-sm text-[#ffffff]/60" style={{ lineHeight: 1.65 }}>
                         {d}
                       </p>
                     ))}
@@ -350,7 +424,7 @@ export default function About() {
           </>
         )}
 
-        {/* bottom loader + dots */}
+        {/* bottom dots (+ touch loader; the desktop loader lives on the cursor) */}
         {n > 1 && (
           <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center gap-4 pb-8">
             <div className="flex gap-2">
@@ -370,7 +444,7 @@ export default function About() {
                 />
               ))}
             </div>
-            <div className="h-px w-40 overflow-hidden bg-white/12 md:w-64">
+            <div className="h-px w-40 overflow-hidden bg-white/12 md:w-64 lg:hidden">
               <span
                 ref={bar}
                 className="block h-full origin-left bg-cherenkov-500"
@@ -381,21 +455,36 @@ export default function About() {
         )}
       </div>
 
-      {/* desktop directional-arrow cursor */}
+      {/* desktop directional cursor: physics + progress ring + 3D flip */}
       <div
         ref={arrow}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 hidden h-16 w-16 items-center justify-center rounded-full border border-cherenkov-500/40 bg-cherenkov-500/10 backdrop-blur-md lg:flex"
-        style={{ zIndex: "var(--z-cursor)", opacity: 0 }}
+        className="pointer-events-none fixed left-0 top-0 hidden h-16 w-16 items-center justify-center rounded-full border border-cherenkov-500/20 bg-cherenkov-500/10 backdrop-blur-md lg:flex"
+        style={{ zIndex: "var(--z-cursor)", opacity: 0, perspective: 420 }}
       >
+        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r={RING_R} stroke="rgba(56,219,255,0.15)" strokeWidth="2" />
+          <circle
+            ref={ring}
+            cx="32"
+            cy="32"
+            r={RING_R}
+            stroke="var(--color-cherenkov-300)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray={RING_C}
+            strokeDashoffset={RING_C}
+            style={{ filter: "drop-shadow(0 0 4px rgba(56,219,255,0.7))" }}
+          />
+        </svg>
         <svg
+          ref={chevron}
           width="22"
           height="22"
           viewBox="0 0 24 24"
           fill="none"
           stroke="var(--color-cherenkov-300)"
           strokeWidth="2"
-          style={{ transform: dirIcon === 1 ? "none" : "scaleX(-1)" }}
         >
           <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

@@ -9,10 +9,11 @@ import Cursor from "@/components/persistent/Cursor";
 import ScaleReadout from "@/components/persistent/ScaleReadout";
 import ProgressFilament from "@/components/persistent/ProgressFilament";
 import SectionHUD from "@/components/persistent/SectionHUD";
+import BackgroundAudio from "@/components/persistent/BackgroundAudio";
 import { SITE, FOUNDERS } from "@/constants/content";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quarks-rosy.vercel.app";
-const TITLE = `${SITE.name} - ${SITE.tagline}`;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quarks.agency";
+const TITLE = `${SITE.name} — ${SITE.tagline}`;
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -82,9 +83,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: SITE.description,
     locale: "en_US",
-    images: [
-      { url: "/hero/genesis-poster.jpg", alt: TITLE, width: 1920, height: 1080 },
-    ],
+    images: [{ url: "/hero/genesis-poster.jpg", alt: TITLE, width: 1920, height: 1080 }],
   },
   twitter: {
     card: "summary_large_image",
@@ -155,6 +154,7 @@ export default function RootLayout({
           <ProgressFilament />
           <Cursor />
           <Preloader />
+          <BackgroundAudio />
         </SmoothScrollProvider>
       </body>
     </html>

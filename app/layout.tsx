@@ -12,7 +12,7 @@ import SectionHUD from "@/components/persistent/SectionHUD";
 import { SITE, FOUNDERS } from "@/constants/content";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quarks-rosy.vercel.app";
-const TITLE = `${SITE.name} — ${SITE.tagline}`;
+const TITLE = `${SITE.name} - ${SITE.tagline}`;
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",

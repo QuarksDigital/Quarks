@@ -1,5 +1,5 @@
 /**
- * S4 case visuals — WebGL displacement planes synced to DOM rects.
+ * S4 case visuals - WebGL displacement planes synced to DOM rects.
  * Cursor velocity ripples the image; spring-decays to rest (Bible §5.2).
  */
 import * as THREE from "three";

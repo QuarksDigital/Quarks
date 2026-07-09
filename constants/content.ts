@@ -1,11 +1,11 @@
-/** QUARKS — all copy. No strings inside components. */
+/** QUARKS - all copy. No strings inside components. */
 
 export const SITE = {
   name: "QUARKS",
   tagline: "From Invisible to Inevitable.",
   subline: "A DIGITAL MARKETING AGENCY",
   description:
-    "Quarks is a digital marketing agency that engineers attention at the fundamental level. We guarantee permanent impact.",
+    "Quarks is a digital marketing agency that engineers attention at the fundamental level. We guarantee permanent impact. We provide a full suite of services, from UI/UX design to 3D experiences and full stack development. Our services also include optimization of SEO/GEO, digital marketing, and social media management.",
   emailNew: "quarksdigitalmarketing@gmail.com",
   emailElse: "quarks.questions@gmail.com",
   coordinates: "20.296059° N · 85.824539° E",
@@ -20,7 +20,7 @@ export const HERO = {
 export const MANIFESTO = {
   hudLabel: "S2 · THE DIMENSION",
   lines: ["Everything that matters", "is made of things", "you can't see."],
-  particles: "ATTENTION · INSIGHT · IDEAS — THE PARTICLES OF CULTURE.",
+  particles: "ATTENTION · INSIGHT · IDEAS - THE PARTICLES OF CULTURE.",
 } as const;
 
 export interface ForceDef {
@@ -196,7 +196,7 @@ export interface FounderDef {
   role: string;
   /** extra detail lines shown under the role (each revealed word by word) */
   details: string[];
-  /** full landscape photo in /public/founders — face toward the left */
+  /** full landscape photo in /public/founders - face toward the left */
   photoFull: string;
   /** optional CSS object-position for the photo crop (default "30% 38%") */
   objectPos?: string;
@@ -205,7 +205,7 @@ export interface FounderDef {
 }
 
 /**
- * ABOUT — the founders. To add a founder later: drop a background-removed head
+ * ABOUT - the founders. To add a founder later: drop a background-removed head
  * cutout into /public/founders/NAME.png and append one entry below.
  */
 export const FOUNDERS: readonly FounderDef[] = [

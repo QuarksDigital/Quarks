@@ -1,6 +1,6 @@
 /**
  * Shared particle buffer: ambient drift (S2), cosmos (S5 exit), and the
- * S7 gravity well in-fall — same points, retargeted (Bible §6.3/§7).
+ * S7 gravity well in-fall - same points, retargeted (Bible §6.3/§7).
  */
 import * as THREE from "three";
 import { Engine, SceneModule, getGlowTexture } from "./engine";

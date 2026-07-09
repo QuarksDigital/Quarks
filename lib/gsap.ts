@@ -1,5 +1,5 @@
 /**
- * QUARKS — single GSAP import point.
+ * QUARKS - single GSAP import point.
  * Import gsap ONLY from this module; plugins are registered exactly once.
  * Client-only: never import from a Server Component.
  */

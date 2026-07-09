@@ -1,4 +1,4 @@
-/** QUARKS — every motion value in the experience lives here. (Animation Bible §0) */
+/** QUARKS - every motion value in the experience lives here. (Animation Bible §0) */
 
 export const EASE = {
   /** things being born */

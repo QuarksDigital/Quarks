@@ -32,7 +32,7 @@ export default function Scale() {
     <section
       ref={section}
       id="scale"
-      aria-label="Process — from quark to cosmos"
+      aria-label="Process - from quark to cosmos"
       className="relative h-screen overflow-hidden"
       style={{ zIndex: "var(--z-scene)" }}
     >

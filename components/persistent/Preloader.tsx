@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * S0 — the protagonist is born (Animation Bible §1).
+ * S0 - the protagonist is born (Animation Bible §1).
  * Counter accelerates 0→100, ring charges + collapses into the orb,
  * iris reveal hands the orb off to the hero video's particle position.
  */

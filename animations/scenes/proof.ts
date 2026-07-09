@@ -1,4 +1,4 @@
-/** S6 — Proof strip: filament draws through the stats; labels unmask (Bible §7). */
+/** S6 - Proof strip: filament draws through the stats; labels unmask (Bible §7). */
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { register, unregister } from "@/animations/core/timelineRegistry";
 import { reportSceneRange } from "@/animations/core/sceneRanges";

@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * S8 — About. A founder carousel.
+ * S8 - About. A founder carousel.
  *   • keeps the photo-left / details-right / dot-film design
- *   • desktop: a physics-based directional cursor with a 7s progress ring —
+ *   • desktop: a physics-based directional cursor with a 7s progress ring -
  *     it springs after the pointer with inertia + velocity squash/stretch, and
  *     the arrow does a smooth 3D flip between next (>) and previous (<).
  *     Hovering a half fills the ring and auto-advances; clicking advances now.
  *   • mobile / tablet: left & right arrow buttons (and swipe)
  *   • a bottom loader auto-advances every 7s on touch / when not hovered
- * Add founders by appending to FOUNDERS — everything scales automatically.
+ * Add founders by appending to FOUNDERS - everything scales automatically.
  */
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
@@ -311,7 +311,7 @@ export default function About() {
     <section
       ref={section}
       id="about"
-      aria-label="About Quarks — our team"
+      aria-label="About Quarks - our team"
       className="relative mt-[14vh]"
       style={{ zIndex: "var(--z-scene)" }}
     >

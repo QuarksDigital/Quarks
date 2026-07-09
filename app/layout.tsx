@@ -15,7 +15,7 @@ import { SITE, FOUNDERS } from "@/constants/content";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.quarksdigital.in";
-const TITLE = `${SITE.name} — ${SITE.tagline}`;
+const TITLE = `${SITE.name} : ${SITE.tagline}`;
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -39,7 +39,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: TITLE, template: `%s — ${SITE.name}` },
+  title: { default: TITLE, template: `%s - ${SITE.name}` },
   description: SITE.description,
   applicationName: SITE.name,
   category: "Marketing",

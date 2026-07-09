@@ -1,5 +1,5 @@
 /**
- * S2 — Manifesto inside the film's inner dimension (Animation Bible §3).
+ * S2 - Manifesto inside the film's inner dimension (Animation Bible §3).
  * Camera-dolly kinetic type: words illuminate crossing the focus plane.
  */
 import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";

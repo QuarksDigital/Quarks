@@ -1,6 +1,6 @@
 "use client";
 
-/** S1 — dumb DOM shell; all motion lives in animations/scenes/hero.ts */
+/** S1 - dumb DOM shell; all motion lives in animations/scenes/hero.ts */
 import { useRef } from "react";
 import { useSceneTrigger } from "@/hooks/useSceneTrigger";
 import { createHeroScene, type HeroRefs } from "@/animations/scenes/hero";
@@ -40,7 +40,7 @@ export default function Hero() {
     <section
       ref={section}
       id="top"
-      aria-label="Quarks — from invisible to inevitable"
+      aria-label="Quarks - from invisible to inevitable"
       className="relative h-screen overflow-hidden bg-void"
       style={{ zIndex: "var(--z-scene)" }}
       data-cursor="hero"
@@ -79,7 +79,7 @@ export default function Hero() {
           <span className="text-cherenkov-500">.</span>
         </h1>
         {/* <p ref={subline} className="type-mono mt-6 text-dust">
-          {SITE.subline} — {SITE.name}
+          {SITE.subline} - {SITE.name}
         </p> */}
       </div>
 

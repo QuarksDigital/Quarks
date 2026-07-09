@@ -1,7 +1,7 @@
 /**
- * S1 — The Void (Animation Bible §2).
+ * S1 - The Void (Animation Bible §2).
  * The 16s "Genesis" film IS the camera; scroll is the projector.
- * Ends by dissolving into the live GridWorld set — no cut, no flash.
+ * Ends by dissolving into the live GridWorld set - no cut, no flash.
  */
 import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { register, unregister } from "@/animations/core/timelineRegistry";
@@ -26,7 +26,7 @@ export interface HeroRefs {
 
 export function createHeroScene({ refs, tier, reduced }: SceneBuildArgs<HeroRefs>): () => void {
   const { section, video, videoWrap, headline, subline, hint } = refs;
-  // subline is optional — the element may be commented out in the DOM shell.
+  // subline is optional - the element may be commented out in the DOM shell.
   if (!section || !video || !headline || !hint || !videoWrap) return () => {};
 
   if (reduced) {

@@ -1,6 +1,6 @@
 /**
  * The protagonist's state machine (Animation Bible §0.2).
- * A tiny observable store — no external state library needed.
+ * A tiny observable store - no external state library needed.
  */
 import type { OrbState } from "@/types";
 

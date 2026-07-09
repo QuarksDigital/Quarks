@@ -1,5 +1,5 @@
 /**
- * S4 — Collisions (Animation Bible §5).
+ * S4 - Collisions (Animation Bible §5).
  * Per case: beams accelerate → impact → circular-mask burst → held drift → collapse.
  * Case media = WebGL displacement planes (desktop) synced to DOM rects.
  */

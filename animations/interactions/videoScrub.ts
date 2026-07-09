@@ -35,7 +35,7 @@ export function createVideoScrubber(video: HTMLVideoElement): VideoScrubber {
         video.currentTime = 0;
         primed = true;
       } catch {
-        /* autoplay refused — first scroll interaction will retry */
+        /* autoplay refused - first scroll interaction will retry */
       }
     },
     destroy() {

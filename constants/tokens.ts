@@ -1,4 +1,4 @@
-/** QUARKS — design tokens (mirror of app/globals.css @theme). */
+/** QUARKS - design tokens (mirror of app/globals.css @theme). */
 export const COLORS = {
   void: "#04040a",
   obsidian900: "#07070f",

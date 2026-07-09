@@ -1,5 +1,5 @@
 /**
- * S2 set — the inner dimension from the hero film's final frame:
+ * S2 set - the inner dimension from the hero film's final frame:
  * reflective grid floor + ceiling, glass monoliths, center glow, drifting stars.
  * Virtual camera continues the film's forward glide (Bible §3).
  */

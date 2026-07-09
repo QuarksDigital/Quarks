@@ -1,5 +1,5 @@
 /**
- * S7 — Gravity Well (Animation Bible §7).
+ * S7 - Gravity Well (Animation Bible §7).
  * Particles in-fall, the triad returns and condenses into the CTA core,
  * headline words gravity-fall into place, footer rises.
  */

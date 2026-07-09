@@ -1,5 +1,5 @@
 /**
- * S3 — The Forces (Animation Bible §4).
+ * S3 - The Forces (Animation Bible §4).
  * Four chapters, continuous camera pans, symbols drawing/retracting,
  * plus a scene-wide particle stream that bends toward the cursor.
  */

@@ -1,6 +1,6 @@
 "use client";
 
-/** Bottom-right mono scale readout — the whole site is one zoom-out (Bible §0.4). */
+/** Bottom-right mono scale readout - the whole site is one zoom-out (Bible §0.4). */
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { exponentAt } from "@/lib/scale";

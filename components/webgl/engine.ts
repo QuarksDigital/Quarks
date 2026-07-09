@@ -1,5 +1,5 @@
 /**
- * QUARKS — the ONE WebGL context (Bible §0.1). Raw three.js, no reconciler.
+ * QUARKS - the ONE WebGL context (Bible §0.1). Raw three.js, no reconciler.
  * Scene modules register here; ScrollTrigger timelines drive their progress.
  */
 import * as THREE from "three";

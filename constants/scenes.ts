@@ -1,4 +1,4 @@
-/** QUARKS — per-scene keyframe tables (Animation Bible). Progress values are 0–1 inside each scene. */
+/** QUARKS - per-scene keyframe tables (Animation Bible). Progress values are 0–1 inside each scene. */
 
 export const SCENE_IDS = [
   "hero",

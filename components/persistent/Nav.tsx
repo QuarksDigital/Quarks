@@ -1,6 +1,6 @@
 "use client";
 
-/** Glass nav pill — hides on downscroll past 100vh, reveals on any upscroll (Bible §0.3). */
+/** Glass nav pill - hides on downscroll past 100vh, reveals on any upscroll (Bible §0.3). */
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { NAV, SITE } from "@/constants/content";
@@ -56,7 +56,7 @@ export default function Nav() {
       <a
         href="#top"
         data-cursor="link"
-        aria-label={`${SITE.name} — back to top`}
+        aria-label={`${SITE.name} - back to top`}
         className="flex shrink-0 items-center gap-2 no-underline"
         onClick={(e) => {
           e.preventDefault();

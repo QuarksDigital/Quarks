@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * "The Particle" — custom cursor (Animation Bible §8).
+ * "The Particle" - custom cursor (Animation Bible §8).
  * Dot + lagging ring; variants via [data-cursor] on targets.
  * Media variant splits the ring into the three-quark triad.
  */

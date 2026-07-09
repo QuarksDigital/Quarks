@@ -1,6 +1,6 @@
 "use client";
 
-/** Animated film grain — 128px noise tile re-randomized at 12fps (Bible §0.3). */
+/** Animated film grain - 128px noise tile re-randomized at 12fps (Bible §0.3). */
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/utils/dom";
 

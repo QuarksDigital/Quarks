@@ -85,7 +85,7 @@ export default function Forces() {
     <section
       ref={section}
       id="forces"
-      aria-label="Services — the four fundamental forces"
+      aria-label="Services - the four fundamental forces"
       className="relative h-screen overflow-hidden"
       style={{ zIndex: "var(--z-scene)" }}
     >

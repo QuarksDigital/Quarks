@@ -134,7 +134,7 @@ function CollisionBlock({
         <img
           ref={mediaImg}
           src={c.image}
-          alt={`${c.client} — case visual`}
+          alt={`${c.client} - case visual`}
           className="h-full w-full object-cover"
           loading={eager ? "eager" : "lazy"}
           draggable={false}
@@ -151,7 +151,7 @@ function CollisionBlock({
 
       <div className="relative flex h-full flex-col justify-end pb-[12vh]">
         <div ref={meta} className="type-mono mb-4 text-cherenkov-300">
-          {c.index} — {c.client} × QUARKS — {c.sector} — {c.year}
+          {c.index} - {c.client} × QUARKS - {c.sector} - {c.year}
         </div>
         <h3
           ref={title}
@@ -202,7 +202,7 @@ export default function Collisions() {
     <section
       ref={wrapper}
       id="collisions"
-      aria-label="Selected work — collisions"
+      aria-label="Selected work - collisions"
     >
       {COLLISIONS.map((c, i) => (
         <CollisionBlock key={c.id} c={c} bind={all[i].bind} eager={i === 0} />

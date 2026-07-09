@@ -7,7 +7,7 @@
  *
  * Browsers block unmuted autoplay without a user gesture, so we (1) try to play
  * audibly right away, and (2) if that's blocked, prime the track muted and unmute
- * on the first interaction (scroll/touch/click) — unmuting an already-playing
+ * on the first interaction (scroll/touch/click) - unmuting an already-playing
  * element needs no gesture.
  */
 
@@ -35,7 +35,7 @@ export function initBackgroundAudio(): () => void {
   // 1) Try to play audibly right away.
   audio.muted = false;
   audio.play().catch(() => {
-    // 2) Autoplay was blocked — prime muted so the element is already running,
+    // 2) Autoplay was blocked - prime muted so the element is already running,
     //    then unmute on the first interaction (scroll included).
     if (!audio || !enabled) return;
     audio.muted = true;
@@ -76,6 +76,18 @@ export function isSoundEnabled(): boolean {
 
 /** Flip sound on/off for this session, (un)pausing the track. */
 export function toggleSound(): boolean {
+  // If autoplay was blocked, the track is already running but muted while we
+  // wait for a gesture. The button click IS that gesture - so the first press
+  // should just switch the sound on (unmute), not toggle it off. Without this,
+  // this click and the window "unlock" listener cancel out and the user has to
+  // click twice.
+  if (audio && enabled && audio.muted && !audio.paused) {
+    audio.muted = false;
+    audio.play().catch(() => {});
+    notify();
+    return enabled;
+  }
+
   enabled = !enabled;
 
   if (audio) {

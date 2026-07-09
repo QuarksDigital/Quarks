@@ -1,5 +1,5 @@
 /**
- * S5 — The Scale (Animation Bible §6): one continuous zoom-out through
+ * S5 - The Scale (Animation Bible §6): one continuous zoom-out through
  * six nested shells (10³× each), process steps emerging at their magnitude.
  */
 import { gsap, ScrollTrigger } from "@/lib/gsap";

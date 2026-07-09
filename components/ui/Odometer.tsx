@@ -1,6 +1,6 @@
 "use client";
 
-/** Rolling metric counter — digit columns translate like an instrument locking in (Bible §5.2). */
+/** Rolling metric counter - digit columns translate like an instrument locking in (Bible §5.2). */
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/utils/dom";

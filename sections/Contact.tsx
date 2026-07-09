@@ -74,7 +74,7 @@ export default function Contact() {
         <div ref={rows} className="mt-14 flex flex-col items-center gap-3">
           {CONTACT.rows.map((r) => (
             <p key={r.label} className="type-mono text-dust">
-              {r.label} —{" "}
+              {r.label} -{" "}
               <a
                 href={`mailto:${r.value}`}
                 data-cursor="link"
@@ -86,7 +86,7 @@ export default function Contact() {
           ))}
         </div>
 
-        {/* About Us — centered on mobile/tablet, bottom-right on desktop; jumps to the About section */}
+        {/* About Us - centered on mobile/tablet, bottom-right on desktop; jumps to the About section */}
         {/* <div className="absolute bottom-28 left-0 right-0 z-10 flex justify-center px-6 md:bottom-12 md:left-auto md:right-12 md:justify-end md:px-0">
           <button
             type="button"

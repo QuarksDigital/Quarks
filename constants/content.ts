@@ -254,6 +254,17 @@ export const FOUNDERS: readonly FounderDef[] = [
     photoFull: "/founders/shuvam.webp",
     objectPos: "10% 40%",
   },
+  {
+    id: "reyansh",
+    name: "REYANSH",
+    role: "CO-FOUNDER · CHIEF FINANCIAL OFFICER",
+    details: [
+      "Financial planning, budgeting, and business strategy.",
+      "Passionate about turning numbers into sustainable growth.",
+      '"Great businesses are built not just by earning more, but by managing wisely." ~Reyansh',
+    ],
+    photoFull: "/founders/reyansh.png",
+  },
 ] as const;
 
 export const ABOUT = {

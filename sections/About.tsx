@@ -11,7 +11,13 @@
  *   • a bottom loader auto-advances every 7s on touch / when not hovered
  * Add founders by appending to FOUNDERS - everything scales automatically.
  */
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { register, unregister } from "@/animations/core/timelineRegistry";
 import { setHudLabel } from "@/components/persistent/SectionHUD";
@@ -72,7 +78,11 @@ export default function About() {
       const reduced = prefersReducedMotion();
       const dur = reduced ? 0.001 : 0.9;
 
-      gsap.set(nxt, { xPercent: d === 1 ? 100 : -100, visibility: "visible", zIndex: 2 });
+      gsap.set(nxt, {
+        xPercent: d === 1 ? 100 : -100,
+        visibility: "visible",
+        zIndex: 2,
+      });
       gsap.set(cur, { zIndex: 1 });
 
       const tl = gsap.timeline({
@@ -81,15 +91,25 @@ export default function About() {
           animating.current = false;
         },
       });
-      tl.to(cur, { xPercent: d === 1 ? -100 : 100, duration: dur, ease: "power3.inOut" }, 0)
-        .to(nxt, { xPercent: 0, duration: dur, ease: "power3.inOut" }, 0);
+      tl.to(
+        cur,
+        { xPercent: d === 1 ? -100 : 100, duration: dur, ease: "power3.inOut" },
+        0,
+      ).to(nxt, { xPercent: 0, duration: dur, ease: "power3.inOut" }, 0);
 
       const det = nxt.querySelector<HTMLElement>(".founder-details");
       if (det && !reduced) {
         tl.fromTo(
           det.children,
           { autoAlpha: 0, y: 26, filter: "blur(10px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", stagger: 0.08, duration: 0.55, ease: "power2.out" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.08,
+            duration: 0.55,
+            ease: "power2.out",
+          },
           0.4,
         );
       }
@@ -102,7 +122,11 @@ export default function About() {
   // initial slide layout + HUD trigger + in-view observer
   useEffect(() => {
     slides.current.forEach((s, i) => {
-      if (s) gsap.set(s, { xPercent: i === 0 ? 0 : 100, visibility: i === 0 ? "visible" : "hidden" });
+      if (s)
+        gsap.set(s, {
+          xPercent: i === 0 ? 0 : 100,
+          visibility: i === 0 ? "visible" : "hidden",
+        });
     });
 
     const st = register(
@@ -143,7 +167,8 @@ export default function About() {
         if (!hovered.current || animating.current) return;
         acc.current += dt;
         const p = Math.min(acc.current / AUTO_MS, 1);
-        if (ring.current) ring.current.style.strokeDashoffset = String(RING_C * (1 - p));
+        if (ring.current)
+          ring.current.style.strokeDashoffset = String(RING_C * (1 - p));
         if (acc.current >= AUTO_MS) {
           acc.current = 0;
           step(dir.current);
@@ -151,7 +176,8 @@ export default function About() {
       } else {
         if (!inView.current || animating.current) return;
         acc.current += dt;
-        if (bar.current) gsap.set(bar.current, { scaleX: Math.min(acc.current / AUTO_MS, 1) });
+        if (bar.current)
+          gsap.set(bar.current, { scaleX: Math.min(acc.current / AUTO_MS, 1) });
         if (acc.current >= AUTO_MS) {
           acc.current = 0;
           step(1);
@@ -167,7 +193,8 @@ export default function About() {
     const stg = stage.current;
     const ar = arrow.current;
     const chev = chevron.current;
-    desk.current = window.innerWidth >= 1024 && !isTouchDevice() && !prefersReducedMotion();
+    desk.current =
+      window.innerWidth >= 1024 && !isTouchDevice() && !prefersReducedMotion();
     if (!stg || !ar || !desk.current) return;
 
     gsap.set(ar, { xPercent: -50, yPercent: -50, autoAlpha: 0 });
@@ -184,8 +211,17 @@ export default function About() {
 
     const flip = (d: 1 | -1) => {
       if (!chev) return;
-      gsap.to(chev, { rotationY: d === 1 ? 0 : 180, duration: 0.55, ease: "back.out(1.7)", overwrite: "auto" });
-      gsap.fromTo(chev, { scale: 0.65 }, { scale: 1, duration: 0.5, ease: "back.out(2.2)" });
+      gsap.to(chev, {
+        rotationY: d === 1 ? 0 : 180,
+        duration: 0.55,
+        ease: "back.out(1.7)",
+        overwrite: "auto",
+      });
+      gsap.fromTo(
+        chev,
+        { scale: 0.65 },
+        { scale: 1, duration: 0.5, ease: "back.out(2.2)" },
+      );
     };
 
     const onMove = (e: PointerEvent) => {
@@ -325,20 +361,26 @@ export default function About() {
         {/* header */}
         <div className="pointer-events-none absolute left-6 top-8 z-20 md:left-16 md:top-12">
           <p className="type-mono text-cherenkov-300">{ABOUT.eyebrow}</p>
-          <p className="mt-2 max-w-xs text-sm text-[#ffffff]/60 md:max-w-sm">{ABOUT.introTitle}</p>
+          <p className="mt-2 max-w-xs text-sm text-[#ffffff]/60 md:max-w-sm">
+            {ABOUT.introTitle}
+          </p>
         </div>
         {n > 1 && (
           <div className="pointer-events-none absolute right-6 top-8 z-20 md:right-16 md:top-12">
             <p className="type-mono text-[#ffffff]/60">
-              <span className="text-starlight">{String(active + 1).padStart(2, "0")}</span> /{" "}
-              {String(n).padStart(2, "0")}
+              <span className="text-starlight">
+                {String(active + 1).padStart(2, "0")}
+              </span>{" "}
+              / {String(n).padStart(2, "0")}
             </p>
           </div>
         )}
 
         {/* slides */}
         {FOUNDERS.map((f, i) => {
-          const idx = f.index ?? `${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
+          const idx =
+            f.index ??
+            `${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
           return (
             <div
               key={f.id}
@@ -368,7 +410,9 @@ export default function About() {
                 />
                 <div
                   className="pointer-events-none absolute inset-0"
-                  style={{ boxShadow: "inset 0 -120px 160px -40px rgba(4,4,10,0.9)" }}
+                  style={{
+                    boxShadow: "inset 0 -120px 160px -40px rgba(4,4,10,0.9)",
+                  }}
                 />
               </div>
 
@@ -385,7 +429,11 @@ export default function About() {
                   <p className="type-mono mt-4 text-cherenkov-300">{f.role}</p>
                   <div className="mt-8 space-y-3">
                     {f.details.map((d) => (
-                      <p key={d} className="max-w-sm text-[#ffffff]/60" style={{ lineHeight: 1.65 }}>
+                      <p
+                        key={d}
+                        className="max-w-sm text-[#ffffff]/60"
+                        style={{ lineHeight: 1.65 }}
+                      >
                         {d}
                       </p>
                     ))}
@@ -406,8 +454,19 @@ export default function About() {
               onClick={() => step(-1)}
               className="absolute bottom-24 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  d="M15 18l-6-6 6-6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
             <button
@@ -417,8 +476,19 @@ export default function About() {
               onClick={() => step(1)}
               className="absolute bottom-24 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  d="M9 6l6 6-6 6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </>
@@ -438,8 +508,12 @@ export default function About() {
                   className="h-1.5 rounded-full transition-all duration-500"
                   style={{
                     width: i === active ? 28 : 8,
-                    background: i === active ? "var(--color-cherenkov-500)" : "rgba(242,245,250,0.25)",
-                    boxShadow: i === active ? "0 0 10px rgba(56,219,255,0.7)" : "none",
+                    background:
+                      i === active
+                        ? "var(--color-cherenkov-500)"
+                        : "rgba(242,245,250,0.25)",
+                    boxShadow:
+                      i === active ? "0 0 10px rgba(56,219,255,0.7)" : "none",
                   }}
                 />
               ))}
@@ -448,7 +522,10 @@ export default function About() {
               <span
                 ref={bar}
                 className="block h-full origin-left bg-cherenkov-500"
-                style={{ transform: "scaleX(0)", boxShadow: "0 0 8px rgba(56,219,255,0.8)" }}
+                style={{
+                  transform: "scaleX(0)",
+                  boxShadow: "0 0 8px rgba(56,219,255,0.8)",
+                }}
               />
             </div>
           </div>
@@ -462,8 +539,18 @@ export default function About() {
         className="pointer-events-none fixed left-0 top-0 hidden h-16 w-16 items-center justify-center rounded-full border border-cherenkov-500/20 bg-cherenkov-500/10 backdrop-blur-md lg:flex"
         style={{ zIndex: "var(--z-cursor)", opacity: 0, perspective: 420 }}
       >
-        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r={RING_R} stroke="rgba(56,219,255,0.15)" strokeWidth="2" />
+        <svg
+          className="absolute inset-0 h-full w-full -rotate-90"
+          viewBox="0 0 64 64"
+          fill="none"
+        >
+          <circle
+            cx="32"
+            cy="32"
+            r={RING_R}
+            stroke="rgba(56,219,255,0.15)"
+            strokeWidth="2"
+          />
           <circle
             ref={ring}
             cx="32"

@@ -168,7 +168,7 @@ export const ABOUT_US = {
       id: "design",
       index: "PRINCIPLE 03 / 04",
       name: "DESIGN",
-      line: "Every interface is crafted to turn attention into action—combining aesthetics, usability, and conversion-focused design.",
+      line: "Every interface is crafted to turn attention into action-combining aesthetics, usability, and conversion-focused design.",
       tags: ["User-first", "Conversion"],
       symbol: "transparency",
     },
@@ -312,7 +312,7 @@ export const FOUNDERS: readonly FounderDef[] = [
     details: [
       "Financial planning, budgeting, and business strategy.",
       "Passionate about turning numbers into sustainable growth.",
-      '"Great businesses are built not just by earning more, but by managing wisely." ~Reyansh',
+      '"Great business is built not just by earning more, but by managing wisely." ~Reyansh Singh',
     ],
     photoFull: "/founders/reyansh.png",
   },

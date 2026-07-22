@@ -23,7 +23,7 @@ import { register, unregister } from "@/animations/core/timelineRegistry";
 import { setHudLabel } from "@/components/persistent/SectionHUD";
 import { getLenis } from "@/components/providers/SmoothScrollProvider";
 import { ABOUT, FOUNDERS } from "@/constants/content";
-import { isTouchDevice, prefersReducedMotion } from "@/utils/dom";
+import { prefersReducedMotion } from "@/utils/dom";
 
 const AUTO_MS = 7000;
 const RING_R = 30;
@@ -193,8 +193,10 @@ export default function About() {
     const stg = stage.current;
     const ar = arrow.current;
     const chev = chevron.current;
+    const hasFinePointer =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     desk.current =
-      window.innerWidth >= 1024 && !isTouchDevice() && !prefersReducedMotion();
+      window.innerWidth >= 1024 && hasFinePointer && !prefersReducedMotion();
     if (!stg || !ar || !desk.current) return;
 
     gsap.set(ar, { xPercent: -50, yPercent: -50, autoAlpha: 0 });

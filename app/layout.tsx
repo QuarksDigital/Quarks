@@ -42,6 +42,9 @@ export const metadata: Metadata = {
   title: { default: TITLE, template: `%s - ${SITE.name}` },
   description: SITE.description,
   applicationName: SITE.name,
+
+  manifest: "/manifest.json",
+
   category: "Marketing",
   keywords: [
     "digital marketing agency",

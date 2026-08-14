@@ -256,6 +256,15 @@ body[data-custom-cursor="true"] * {
   border: 1px solid rgba(11, 12, 15, 0.12);
 }
 
+/* Deck territory on a touch screen: the card itself is a swipe target in every
+   direction, so the browser must not claim the gesture as a page scroll first.
+   Scoped to coarse pointers - a mouse never competes for it. */
+@media (max-width: 1200px) and (pointer: coarse) {
+  .svc-card {
+    touch-action: none;
+  }
+}
+
 .glass-lit {
   position: relative;
   overflow: hidden;
@@ -467,6 +476,9 @@ body[data-custom-cursor="true"] * {
 :root {
   --hero-runway: 340vh;
   --hero-hint-bottom: 26px;
+  /* Height of the pinned hero frame. Desktop has no browser chrome that comes
+     and goes, so 100vh is exact there; phones override this below. */
+  --hero-vh: 100vh;
 
   --work-panel-w: min(54vw, 640px);
   --work-panel-maxh: 44vh;
@@ -475,7 +487,9 @@ body[data-custom-cursor="true"] * {
 
   --founder-name: clamp(34px, 5.4vw, 80px);
   --founder-col-w: 54%;
-  --founder-col-pad: 0 clamp(22px, 4vw, 64px);
+  /* The stage is full-bleed, so the copy keeps its distance from the screen
+     edge with the page gutter rather than a padding of its own. */
+  --founder-col-pad: 0 var(--gutter);
   --founder-h: min(82vh, 720px);
   --fstage-wash: linear-gradient(
     90deg,
@@ -506,6 +520,16 @@ body[data-custom-cursor="true"] * {
   :root {
     --hero-runway: 260vh;
     --hero-hint-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    /*
+      On a phone `100vh` is the *large* viewport - the height the page would
+      have if the address bar were hidden - so a frame sized in vh is taller
+      than what is actually on screen. The hero centres its copy in that
+      frame, which pushed the whole block below the optical centre and left a
+      dead band across the top of the first screen. `100svh` is the height
+      that is genuinely visible, and unlike `dvh` it does not resize as the
+      address bar slides, so the pinned frame stays still while scrolling.
+    */
+    --hero-vh: 100svh;
     --work-panel-w: min(78vw, 520px);
     --work-panel-maxh: 38vh;
     --work-cap-bottom: 14vh;
@@ -523,7 +547,7 @@ body[data-custom-cursor="true"] * {
       portrait reads through the top, the text sits on solid dark below.
     */
     --founder-col-w: 100%;
-    --founder-col-pad: 0 22px 52px;
+    --founder-col-pad: 0 var(--gutter) 52px;
     --founder-name: clamp(30px, 9vw, 46px);
     --fstage-wash: linear-gradient(
       180deg,
@@ -628,15 +652,21 @@ body[data-custom-cursor="true"] * {
 
 @media (max-width: 640px) {
   :root {
-    --card-w: min(19rem, calc(100vw - 3rem));
-    --card-h: 19rem;
-    --card-h-open: 23.5rem;
-    --card-pad: 18px;
-    --card-radius: 20px;
-    --card-gap: 13px;
-    --card-text-gap: 9px;
-    --card-title: 1.2rem;
-    --card-body: 13px;
+    /* Deliberately smaller than the deck used to be: the fan needs to show
+       four headings inside the band, and a card that fills the phone edge to
+       edge leaves nothing for the peek strips to sit in. */
+    --card-w: min(16rem, calc(100vw - 5.5rem));
+    --card-h: 15.5rem;
+    --card-h-open: 20rem;
+    --card-pad: 15px;
+    --card-radius: 18px;
+    --card-gap: 10px;
+    --card-text-gap: 7px;
+    --card-title: 1.05rem;
+    --card-body: 12px;
+    --card-tag: 9.5px;
+    --card-tag-gap: 5px;
+    --card-tag-pad: 5px 9px;
 
     --svc-head-top: 74px;
     --svc-title-mt: 12px;

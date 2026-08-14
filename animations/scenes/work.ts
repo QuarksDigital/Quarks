@@ -132,6 +132,65 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
 
   gsap.ticker.add(tick);
 
+  /*
+   * ── snap the runway to card boundaries ──────────────────────────────────
+   *
+   * travel runs 0 -> 1 across the pin and card i is dead ahead at travel = i/n,
+   * so parking scroll progress on a multiple of 1/n leaves whichever card is
+   * nearest square to the camera, instead of stopping the column halfway
+   * between two faces.
+   *
+   * ScrollTrigger's own `snap` is not used: it drives the scroll position
+   * directly, and Lenis - which owns scrolling here - overwrites that on its
+   * next frame, so the snap tween lands and is immediately undone. Handing the
+   * move to Lenis instead is the only version that actually holds.
+   */
+  let settleTimer: ReturnType<typeof setTimeout> | null = null;
+  let snapping = false;
+
+  const settle = () => {
+    settleTimer = null;
+    if (st.open >= 0 || st.dragging || snapping) return;
+
+    const from = pinTrigger.start;
+    const span = pinTrigger.end - from;
+    if (span <= 0) return;
+
+    const p = (window.scrollY - from) / span;
+    // Outside the pin (or right at its edges) there is nothing to snap to.
+    if (p < 0.001 || p > 0.999) return;
+
+    /*
+     * What has to land on a card boundary is total travel, not scroll alone -
+     * a drag on the stage offsets one from the other. Scroll covers as much
+     * of the correction as the runway allows and any remainder is folded back
+     * into the drag offset, which the ticker's lerp eases in for free.
+     */
+    const total = st.scroll + st.drag;
+    const nearest = Math.round(total * n) / n;
+    if (Math.abs(nearest - total) < 0.0015) return;
+
+    const pTarget = Math.min(1, Math.max(0, nearest - st.drag));
+    st.drag = nearest - pTarget;
+    st.vel = 0;
+
+    const lenis = getLenis();
+    const target = Math.round(from + pTarget * span);
+    if (!lenis) {
+      window.scrollTo({ top: target, behavior: "smooth" });
+      return;
+    }
+
+    snapping = true;
+    lenis.scrollTo(target, {
+      duration: 0.55,
+      easing: (t: number) => 1 - Math.pow(1 - t, 3),
+      onComplete: () => {
+        snapping = false;
+      },
+    });
+  };
+
   const pinTrigger = ScrollTrigger.create({
     trigger: stage,
     start: "top top",
@@ -140,6 +199,10 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
     invalidateOnRefresh: true,
     onUpdate: (self) => {
       st.scroll = self.progress;
+      // Every frame of movement pushes the settle out; it only fires once the
+      // reader has actually stopped.
+      if (settleTimer) clearTimeout(settleTimer);
+      if (!snapping) settleTimer = setTimeout(settle, 160);
     },
   });
 
@@ -365,9 +428,25 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
   stage.addEventListener("mousedown", onMouseDown);
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", up);
-  stage.addEventListener("touchstart", onTS, { passive: true });
-  stage.addEventListener("touchmove", onTM, { passive: true });
-  stage.addEventListener("touchend", up);
+
+  /*
+   * Touch drag is desktop-only on purpose.
+   *
+   * The stage keeps `touch-action: pan-y`, so on a phone a single swipe is
+   * both a page scroll *and* a drag: travel advanced twice per gesture and the
+   * column looped more than once down the runway, which read as the same case
+   * showing up two or three times. A pointer that can hover is a mouse, and a
+   * mouse only drags when a button is held - so there the two never overlap.
+   */
+  const finePointer =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (finePointer) {
+    stage.addEventListener("touchstart", onTS, { passive: true });
+    stage.addEventListener("touchmove", onTM, { passive: true });
+    stage.addEventListener("touchend", up);
+  }
   window.addEventListener("resize", layout);
   cleanups.push(() => {
     stage.removeEventListener("mousedown", onMouseDown);
@@ -382,6 +461,7 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
   paint();
 
   return () => {
+    if (settleTimer) clearTimeout(settleTimer);
     gsap.ticker.remove(tick);
     pinTrigger.kill();
     getLenis()?.start();

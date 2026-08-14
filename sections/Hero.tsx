@@ -22,7 +22,7 @@ export default function Hero() {
 
   return (
     <div ref={hero} data-q="hero" className="relative" style={{ height: "var(--hero-runway)" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 overflow-hidden" style={{ height: "var(--hero-vh)" }}>
         <video
           ref={video}
           data-q="hero-video"

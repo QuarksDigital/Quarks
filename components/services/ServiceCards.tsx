@@ -15,7 +15,7 @@
  * Selecting a card flies its slot to the front on an elastic ease while the
  * rest recede, dim and blur. Switching pillar re-forms the whole cloud.
  */
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import {
   DECK_BELOW,
@@ -37,6 +37,11 @@ interface Props {
 
 const keyOf = (pillar: number, s: ServiceDef) => `${pillar}-${s.n}`;
 
+/** px of travel before a press on the deck counts as a swipe rather than a tap. */
+const SWIPE_THRESHOLD = 52;
+/** px of travel before the press stops being a tap at all (kills the click). */
+const SWIPE_SLOP = 7;
+
 export default function ServiceCards({ pillar, selected, onSelect }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const slotRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -49,6 +54,37 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
   const fitRef = useRef(1);
 
   const items = PILLARS[pillar].items;
+
+  /*
+   * ── the deck's running order ─────────────────────────────────────────────
+   *
+   * On phones the cloud collapses to a fanned deck (see slotFor), and the only
+   * card that reads properly is the one in front. Rotation is what makes that
+   * deck navigable: swiping the front card away moves every card up one
+   * position in the fan and brings the one underneath forward.
+   *
+   * The order is held in a ref because the drag handlers read it mid-gesture,
+   * with a state counter alongside purely to drive the re-layout and the
+   * z-index pass on the next render.
+   */
+  const rotRef = useRef(0);
+  const [rotTick, setRotTick] = useState(0);
+  /** id of the card just swiped away, so it can be re-seated at the back. */
+  const flungRef = useRef<string | null>(null);
+  const dragRef = useRef<{
+    id: string;
+    x: number;
+    y: number;
+    moved: boolean;
+  } | null>(null);
+  /** set by a swipe so the click that follows the release doesn't open a card. */
+  const suppressClickRef = useRef(false);
+
+  /** Where card `i` currently sits in the fan, front (0) to back. */
+  const deckIndex = useCallback(
+    (i: number) => (i + rotRef.current) % items.length,
+    [items.length],
+  );
 
   /** Resolve percentage slots to px for the current viewport. */
   const layout = useCallback(
@@ -85,7 +121,11 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
       const sample = slotRefs.current.get(keyOf(pillar, items[0]));
       const cardH = sample?.querySelector<HTMLElement>("[data-face]")?.offsetHeight ?? 340;
 
-      const slots = items.map((_, i) => slotFor(items.length, i, deck, pillar));
+      // In deck mode the slot a card occupies is its position in the fan, not
+      // its position in the data - that is what rotating the deck changes.
+      const slots = items.map((_, i) =>
+        slotFor(items.length, deck ? deckIndex(i) : i, deck, pillar),
+      );
       const maxAbsY = Math.max(...slots.map((s) => Math.abs(s.y))) / 100;
 
       /*
@@ -107,8 +147,9 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
         const y = bandShift + (slot.y / 100) * bandH * fit;
         const z = slot.z * depth;
         // In deck mode only the front card is fully legible (see deckAlpha).
-        const alpha = deck ? deckAlpha(i) : 1;
+        const alpha = deck ? deckAlpha(deckIndex(i)) : 1;
         baseRef.current.set(id, { x, y, z, alpha });
+        if (deck) el.style.zIndex = String(20 - deckIndex(i));
 
         if (selectedRef.current) return;
 
@@ -128,7 +169,7 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
 
       fitRef.current = fit;
     },
-    [items, pillar],
+    [items, pillar, deckIndex],
   );
 
   // ── pillar change: re-form the cloud ────────────────────────────────────
@@ -136,6 +177,10 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
     const wrap = wrapRef.current;
     if (!wrap) return;
     const reduced = prefersReducedMotion();
+
+    // A new pillar deals a fresh hand: back to card one, face up.
+    rotRef.current = 0;
+    flungRef.current = null;
 
     floatTweens.current.forEach((t) => t.kill());
     floatTweens.current = [];
@@ -187,6 +232,149 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
   }, [layout, items, pillar]);
 
   /*
+   * Re-form the fan after a swipe.
+   *
+   * layout() already tweens every card to its new slot, so the only special
+   * case is the card that was just thrown: it is sitting off-frame at zero
+   * opacity, and letting it tween home from there would send it sailing back
+   * across the stage. Instead it is teleported to its new place at the back of
+   * the fan, a little deeper than it belongs, and fades forward into the
+   * stack - so it reads as going *under* the deck rather than around it.
+   */
+  useEffect(() => {
+    if (!rotTick) return;
+    layout(true);
+
+    const id = flungRef.current;
+    flungRef.current = null;
+    if (!id) return;
+
+    const el = slotRefs.current.get(id);
+    const base = baseRef.current.get(id);
+    if (!el || !base) return;
+
+    gsap.killTweensOf(el);
+    gsap.set(el, {
+      x: base.x,
+      y: base.y,
+      z: base.z - 260,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
+      scale: fitRef.current * 0.88,
+      autoAlpha: 0,
+    });
+    const slot = slotFor(items.length, deckIndex(items.findIndex((s) => keyOf(pillar, s) === id)), true, pillar);
+    gsap.to(el, {
+      x: base.x,
+      y: base.y,
+      z: base.z,
+      rotationZ: slot.rz,
+      scale: fitRef.current,
+      autoAlpha: base.alpha,
+      duration: 0.55,
+      ease: EASE.settle,
+      delay: 0.05,
+    });
+  }, [rotTick, layout, items, pillar, deckIndex]);
+
+  /*
+   * ── swipe to advance the deck ────────────────────────────────────────────
+   *
+   * Only the front card is draggable, and it follows the finger in whichever
+   * direction it is thrown - past the threshold it keeps going and the deck
+   * rotates; short of it, it springs back. Direction is deliberately not
+   * constrained: on a stack this shallow any confident flick should work, and
+   * forcing a horizontal one fights the page's vertical scroll.
+   */
+  const onDragStart = (id: string, i: number, e: React.PointerEvent) => {
+    if (!deckRef.current || selectedRef.current || items.length < 2) return;
+    if (deckIndex(i) !== 0) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    dragRef.current = { id, x: e.clientX, y: e.clientY, moved: false };
+  };
+
+  const onDragMove = (id: string, e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d || d.id !== id) return;
+
+    const dx = e.clientX - d.x;
+    const dy = e.clientY - d.y;
+    if (!d.moved && Math.hypot(dx, dy) < SWIPE_SLOP) return;
+    d.moved = true;
+    suppressClickRef.current = true;
+
+    const el = slotRefs.current.get(id);
+    const base = baseRef.current.get(id);
+    if (!el || !base) return;
+
+    gsap.killTweensOf(el);
+    gsap.set(el, {
+      x: base.x + dx,
+      y: base.y + dy,
+      // A little lean and lift, so the card reads as being picked up.
+      rotationZ: dx * 0.045,
+      rotationY: dx * 0.02,
+      z: base.z + 40,
+      autoAlpha: Math.max(0.4, 1 - Math.hypot(dx, dy) / 620),
+    });
+  };
+
+  const onDragEnd = (id: string, i: number, e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d || d.id !== id) return;
+    dragRef.current = null;
+
+    const el = slotRefs.current.get(id);
+    const base = baseRef.current.get(id);
+    if (!el || !base) return;
+
+    const dx = e.clientX - d.x;
+    const dy = e.clientY - d.y;
+    const dist = Math.hypot(dx, dy);
+
+    if (!d.moved) return;
+    // The click event fires after pointerup; clear the guard once it has.
+    setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+
+    if (dist < SWIPE_THRESHOLD) {
+      const slot = slotFor(items.length, deckIndex(i), true, pillar);
+      gsap.to(el, {
+        x: base.x,
+        y: base.y,
+        z: base.z,
+        rotationY: slot.ry,
+        rotationZ: slot.rz,
+        autoAlpha: base.alpha,
+        duration: 0.7,
+        ease: EASE.elastic,
+        overwrite: "auto",
+      });
+      return;
+    }
+
+    // Carry the throw off the edge of the stage before re-dealing.
+    const throwScale = Math.min(3.4, 480 / Math.max(dist, 1) + 1.4);
+    flungRef.current = id;
+    gsap.to(el, {
+      x: base.x + dx * throwScale,
+      y: base.y + dy * throwScale,
+      rotationZ: dx * 0.085,
+      autoAlpha: 0,
+      duration: 0.36,
+      ease: "power2.in",
+      overwrite: "auto",
+      onComplete: () => {
+        rotRef.current = (rotRef.current + 1) % items.length;
+        setRotTick((t) => t + 1);
+      },
+    });
+  };
+
+  /*
    * Lift the whole cloud above the heading while a card is open.
    *
    * `perspective` on the wrapper makes it a stacking context, so the open
@@ -226,7 +414,12 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
       const base = baseRef.current.get(id);
       if (!el || !base) return;
 
-      const slot = slotFor(items.length, i, deckRef.current, pillar);
+      const slot = slotFor(
+        items.length,
+        deckRef.current ? deckIndex(i) : i,
+        deckRef.current,
+        pillar,
+      );
       const float = el.querySelector<HTMLElement>("[data-float]");
       const isActive = selected === id;
 
@@ -273,7 +466,7 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
         });
       }
     });
-  }, [selected, items, pillar]);
+  }, [selected, items, pillar, deckIndex]);
 
   useEffect(() => {
     if (!selected) return;
@@ -364,10 +557,20 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
                   data-cursor="link"
                   type="button"
                   aria-expanded={isActive}
-                  onClick={() => onSelect(isActive ? null : id)}
+                  onClick={() => {
+                    // A swipe ends in a click; that one is the gesture, not a tap.
+                    if (suppressClickRef.current) return;
+                    onSelect(isActive ? null : id);
+                  }}
                   onPointerEnter={() => hover(id, true)}
                   onPointerLeave={() => hover(id, false)}
-                  onPointerMove={(e) => onCardMove(id, e)}
+                  onPointerDown={(e) => onDragStart(id, i, e)}
+                  onPointerMove={(e) => {
+                    onDragMove(id, e);
+                    onCardMove(id, e);
+                  }}
+                  onPointerUp={(e) => onDragEnd(id, i, e)}
+                  onPointerCancel={(e) => onDragEnd(id, i, e)}
                   className="svc-card glass-lit pointer-events-auto flex flex-col text-left transition-[height] duration-500"
                   style={{
                     width: "var(--card-w)",

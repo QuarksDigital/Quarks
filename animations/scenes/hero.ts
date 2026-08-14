@@ -9,7 +9,7 @@
  * timing - it fires once the plate has lifted, not on mount.
  */
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { HERO as HERO_MOTION } from "@/constants/motion";
+import { HERO as HERO_MOTION, REVEAL as HERO_REVEAL } from "@/constants/motion";
 import type { SceneBuildArgs } from "@/hooks/useSceneTrigger";
 
 export interface HeroRefs {
@@ -29,6 +29,13 @@ export function playHeroIntro(instant = false): void {
 
   gsap.set("[data-q='ht-line']", { yPercent: 118 });
 
+  /*
+   * Same focus pull the rest of the document uses (see interactions/reveal).
+   * On the title it rides on the h1, not the masked lines, so the blur is not
+   * clipped against the reveal box.
+   */
+  const BLUR_IN = { filter: `blur(${HERO_REVEAL.blur}px)` };
+
   gsap
     .timeline({
       /*
@@ -41,11 +48,32 @@ export function playHeroIntro(instant = false): void {
       onComplete: () => ScrollTrigger.refresh(),
     })
     .to("[data-q='ht-line']", { yPercent: 0, duration: 1.35, ease: "expo.out", stagger: 0.09 })
-    .from("[data-q='hero-eyebrow']", { opacity: 0, y: 16, duration: 0.9, ease: "power3.out" }, 0.1)
-    .from("[data-q='hero-sub']", { opacity: 0, y: 24, duration: 1, ease: "power3.out" }, 0.5)
+    .from(
+      "[data-q='hero-title']",
+      { ...BLUR_IN, duration: 1.5, ease: "power2.out", clearProps: "filter" },
+      0,
+    )
+    .from(
+      "[data-q='hero-eyebrow']",
+      { ...BLUR_IN, opacity: 0, y: 16, duration: 0.9, ease: "power3.out", clearProps: "filter" },
+      0.1,
+    )
+    .from(
+      "[data-q='hero-sub']",
+      { ...BLUR_IN, opacity: 0, y: 24, duration: 1, ease: "power3.out", clearProps: "filter" },
+      0.5,
+    )
     .from(
       "[data-q='hero-cta'] > *",
-      { opacity: 0, y: 22, duration: 0.9, ease: "power3.out", stagger: 0.08 },
+      {
+        ...BLUR_IN,
+        opacity: 0,
+        y: 22,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.08,
+        clearProps: "filter",
+      },
       0.65,
     )
     .from("[data-q='hero-hint']", { opacity: 0, duration: 0.8 }, 0.9)

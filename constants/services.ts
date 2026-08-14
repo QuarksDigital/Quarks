@@ -283,7 +283,7 @@ export const slotFor = (
 export const DECK_BELOW = 1200;
 
 export const SERVICES_COPY = {
-  index: "02 - Services",
+  index: "05 - Services",
   heading: "Ten things we do. All of them properly.",
   sub: "Pick one or take the full stack. Every engagement has a named lead, a fixed scope and a date.",
   hint: "DRAG TO ORBIT · CLICK A CARD",

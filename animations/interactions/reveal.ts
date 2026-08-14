@@ -23,7 +23,33 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
   scope.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
     // The hero runs its own intro timeline; don't double-animate it.
     if (el.closest("[data-q='hero']")) return;
-    const tween = gsap.fromTo(
+
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: el, start: REVEAL.start, once: true },
+    });
+
+    /*
+     * Two channels, one gesture: the words ride up out of their masks while
+     * the heading as a whole resolves out of focus.
+     *
+     * The blur sits on the [data-split] element rather than on .q-word because
+     * .q-word-wrap clips its child - a blur applied inside the mask would have
+     * its soft edge sliced off against the box and read as a smear. Applied to
+     * the parent, the clip happens first and the whole resolved block is what
+     * comes into focus.
+     */
+    tl.fromTo(
+      el,
+      { filter: `blur(${REVEAL.blur}px)` },
+      {
+        filter: "blur(0px)",
+        duration: REVEAL.blurDuration,
+        ease: "power2.out",
+        immediateRender: false,
+        clearProps: "filter",
+      },
+      0,
+    ).fromTo(
       el.querySelectorAll(".q-word"),
       { yPercent: REVEAL.yPercent },
       {
@@ -32,23 +58,26 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
         ease: "expo.out",
         stagger: REVEAL.stagger,
         immediateRender: false,
-        scrollTrigger: { trigger: el, start: REVEAL.start, once: true },
       },
+      0,
     );
-    if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+
+    if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
   });
 
   (["[data-fact]", "[data-step]", "[data-scard]"] as const).forEach((sel) => {
     scope.querySelectorAll<HTMLElement>(sel).forEach((el) => {
       const tween = gsap.fromTo(
         el,
-        { opacity: 0, y: 42 },
+        { opacity: 0, y: 42, filter: `blur(${REVEAL.blur}px)` },
         {
           opacity: 1,
           y: 0,
+          filter: "blur(0px)",
           duration: 1,
           ease: "power3.out",
           immediateRender: false,
+          clearProps: "filter",
           scrollTrigger: { trigger: el, start: "top 92%", once: true },
         },
       );

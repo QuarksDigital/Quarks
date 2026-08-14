@@ -48,11 +48,33 @@ export function createGateScene({ refs, reduced }: SceneBuildArgs<GateRefs>): ((
   gsap.set(mark, { transformOrigin: "50% 50%" });
 
   /**
+   * The glyph is authored at 120px, which is comfortably inside a desktop
+   * frame but far wider than a phone: at 390px the word ran off both edges,
+   * so the cut-out opened on nothing but the middle two letters.
+   *
+   * Rather than a media query on a magic font size, measure the rendered word
+   * and step it down until it occupies a fixed share of the viewport. Only
+   * ever shrinks, so wide screens keep the authored size untouched.
+   */
+  const BASE_FONT = 120;
+  const FIT_RATIO = 0.82;
+  const fitFont = (): void => {
+    mark.style.fontSize = `${BASE_FONT}px`;
+    const natural = mark.getBBox().width;
+    if (!natural) return;
+    const target = window.innerWidth * FIT_RATIO;
+    if (natural > target) {
+      mark.style.fontSize = `${Math.max(18, BASE_FONT * (target / natural))}px`;
+    }
+  };
+
+  /**
    * The mark's rest pose is the nav wordmark. Measured rather than hard-coded
    * so it stays welded to the nav across breakpoints.
    */
   const startPose = { x: 0, y: 0, scale: 1 };
   const measure = (): void => {
+    fitFont();
     // The wordmark is hidden on narrow viewports, so fall back to the logo
     // glyph - either way the mark launches from the real nav corner.
     const anchor =

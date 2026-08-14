@@ -56,7 +56,7 @@ export const HERO = {
 } as const;
 
 export const INTRO = {
-  index: "01 - What Quarks actually does",
+  index: "01 - What we do for you.",
   heading:
     "Most agencies stop at the deliverable. We ship the product and the system that grows it.",
   body: "One team designs the interface, writes the code, tunes the search rankings, automates the back office and runs the channels. No handoffs between four vendors. No one to blame but us.",
@@ -98,8 +98,8 @@ export interface CaseDef {
 }
 
 export const WORK = {
-  index: "03 - Selected work",
-  heading: "Products we put into the world.",
+  index: "02 - Selected work",
+  heading: "Our Products.",
   sub: "Drag or scroll sideways. Every card is one client, one scope, one live URL.",
   dragLabel: "DRAG",
   scrollLabel: "SCROLL",
@@ -183,9 +183,9 @@ export interface FounderDef {
 }
 
 export const ABOUT = {
-  index: "04 - The studio",
-  heading: "Four founders, one field. Everyone here builds.",
-  body: "Quarks started in Bhubaneswar in 2024 because good products kept losing to worse products with better distribution. We fixed that by refusing to separate the two: the people who design your interface also own how it gets found.",
+  index: "03 - The studio",
+  heading: "Our Team.",
+  body: "Quarks started in Bhubaneswar in 2026 because good products kept losing to worse products with better distribution. We fixed that by refusing to separate the two: the people who design your interface also own how it gets found.",
   stats: [
     { value: 10, suffix: "+", label: "Products shipped" },
     { value: 10000, suffix: "+", label: "Lives impacted" },
@@ -251,7 +251,7 @@ export const FOUNDERS: readonly FounderDef[] = [
 ] as const;
 
 export const CONTACT = {
-  index: "05 - Start something",
+  index: "04 - Start something",
   heading: "Tell us what you're building.",
   body: "Send a paragraph about the product, the deadline and the budget range. You'll get a reply from a founder within one working day - not a form auto-response.",
   secondaryCta: "Just a question",

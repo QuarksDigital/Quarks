@@ -135,13 +135,27 @@ export default function About() {
           ))}
         </div>
 
-        {/* ── founder stage ─────────────────────────────────────────────── */}
+        {/*
+          ── founder stage ───────────────────────────────────────────────
+          Full-bleed on purpose: the portraits are the one element on this
+          route that wants the whole frame, so the stage breaks out of the
+          measure column and the section gutter. `100vw` plus the centring
+          offset is what carries it edge to edge without the section needing
+          its padding removed (which the copy above still relies on).
+        */}
         <div
           ref={stage}
           data-q="fstage"
           data-cursor="hidden"
-          className="relative overflow-hidden rounded-[22px]"
-          style={{ height: "min(82vh,720px)", background: COLORS.void, color: COLORS.bone }}
+          className="relative overflow-hidden"
+          style={{
+            width: "100vw",
+            marginLeft: "calc(50% - 50vw)",
+            marginRight: "calc(50% - 50vw)",
+            height: "var(--founder-h)",
+            background: COLORS.void,
+            color: COLORS.bone,
+          }}
         >
           {FOUNDERS.map((f) => (
             <div key={f.name} data-slide className="absolute inset-0 overflow-hidden">

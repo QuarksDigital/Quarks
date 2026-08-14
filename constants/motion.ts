@@ -33,6 +33,10 @@ export const REVEAL = {
   duration: 1.05,
   stagger: 0.035,
   start: "top 88%",
+  /** px of defocus a block resolves out of as it enters */
+  blur: 14,
+  /** the focus pull runs a touch longer than the rise, so it lands last */
+  blurDuration: 1.25,
 } as const;
 
 export const HERO = {

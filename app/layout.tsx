@@ -87,7 +87,7 @@ const jsonLd = {
   name: SITE.name,
   legalName: SITE.name,
   url: SITE_URL,
-  logo: `${SITE_URL}/icon.png`,
+  logo: `${SITE_URL}/icon_black_bg.png`,
   image: `${SITE_URL}/hero/genesis-poster.jpg`,
   description: SITE.description,
   slogan: SITE.tagline,

@@ -70,8 +70,8 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: ["/hero/genesis-poster.jpg"],
   },
-  icons: { icon: "/icon.png", apple: "/icon.png", shortcut: "/icon.png" },
-  formatDetection: { email: false, telephone: false, address: false },
+icons: { icon: "/icon_black_bg.png", apple: "/icon_black_bg.png", shortcut: "/icon_black_bg.png" },
+formatDetection: { email: false, telephone: false, address: false },
 };
 
 export const viewport: Viewport = {

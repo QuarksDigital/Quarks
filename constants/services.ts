@@ -28,7 +28,7 @@ export const PILLARS: readonly PillarDef[] = [
   {
     key: "Build",
     blurb: "The product itself - designed, coded and shipped by the same team.",
-    count: "04 SERVICES",
+    count: "05 SERVICES",
     items: [
       {
         n: "01",
@@ -284,7 +284,7 @@ export const DECK_BELOW = 1200;
 
 export const SERVICES_COPY = {
   index: "05 - Services",
-  heading: "Ten things we do. All of them properly.",
+  heading: "Our Expertise.",
   sub: "Pick one or take the full stack. Every engagement has a named lead, a fixed scope and a date.",
   hint: "DRAG TO ORBIT · CLICK A CARD",
   close: "RELEASE",

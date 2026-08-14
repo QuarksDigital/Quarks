@@ -59,6 +59,7 @@ export const MEDIA = {
     mosaram: "/media/cases/mosaram.webp",
     kute: "/media/cases/kute.webp",
     kcpl: "/media/cases/kcpl.webp",
+    shreegautamsteel: "/media/cases/shreegautamsteel.png"
   },
   founders: {
     saksham: "/founders/saksham.webp",

@@ -47,9 +47,9 @@ export const NAV = {
 } as const;
 
 export const HERO = {
-  eyebrow: "Digital product & growth studio · Bhubaneswar, India",
+  eyebrow: "Digital product & growth studio",
   lines: ["From invisible", "to inevitable."] as const,
-  sub: "We design and build websites, apps and 3D experiences - then run the SEO, ASO, automation and social that make them impossible to ignore.",
+  sub: "We create experiences like no other.",
   ctaPrimary: "Start a project",
   ctaSecondary: "See the work",
   hint: "SCROLL",
@@ -169,6 +169,22 @@ export const CASES: readonly CaseDef[] = [
       { value: "+45%", label: "Returning buyers" },
     ],
   },
+  {
+    index: "CASE 004",
+    name: "SHREE GAUTAM STEEL",
+    sector: "Steel utensils manafacturer",
+    year: "2026",
+    image: MEDIA.cases.shreegautamsteel,
+    deliver: "E-commerce · Drop mechanics · Social",
+    summary:
+      "Drop mechanics that treat scarcity as a feature rather than an accident: a queue that holds, a checkout that survives the spike, and a feed that keeps the next drop warm.",
+    scope: ["E-commerce", "Drop mechanics", "Social", "Retention"],
+    results: [
+      { value: "3x", label: "Drop sell-through" },
+      { value: "<1s", label: "Checkout load" },
+      { value: "+45%", label: "Returning buyers" },
+    ],
+  },
 ] as const;
 
 export interface FounderDef {
@@ -189,7 +205,7 @@ export const ABOUT = {
   stats: [
     { value: 10, suffix: "+", label: "Products shipped" },
     { value: 10000, suffix: "+", label: "Lives impacted" },
-    { value: 9, suffix: "", label: "Countries reached" },
+    { value: 70, suffix: "%+", label: "Performance improved" },
   ],
 } as const;
 

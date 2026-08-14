@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Lenis drives the scroll; GSAP's ticker drives Lenis (Bible §0.1).
+ * Lenis drives the scroll; GSAP's ticker drives Lenis.
  * Also installs the global debounced ScrollTrigger refresh.
  */
 import { useEffect, type ReactNode } from "react";
@@ -19,9 +19,10 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     if (prefersReducedMotion()) return;
 
     const lenis = new Lenis({
-      lerp: LENIS.lerp,
+      duration: LENIS.duration,
       wheelMultiplier: LENIS.wheelMultiplier,
       touchMultiplier: LENIS.touchMultiplier,
+      smoothWheel: true,
     });
     lenisInstance = lenis;
 

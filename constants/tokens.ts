@@ -1,25 +1,46 @@
 /** QUARKS - design tokens (mirror of app/globals.css @theme). */
+
 export const COLORS = {
-  void: "#04040a",
-  obsidian900: "#07070f",
-  obsidian800: "#0b0c16",
-  obsidian700: "#12141f",
-  starlight: "#f2f5fa",
-  dust: "#7c8598",
-  cherenkov300: "#9ff1ff",
-  cherenkov500: "#38dbff",
-  cherenkov700: "#0e8fbf",
-  whitehot: "#e8fcff",
+  /** dark route background */
+  void: "#050609",
+  /** light route background (also the ink colour on dark) */
+  bone: "#F1F0EC",
+  /** ink on light routes */
+  ink: "#0B0C0F",
+
+  /** raised dark surfaces */
+  panel: "#0C0E13",
+  panelDeep: "#0A0C11",
+  panelVoid: "#07080C",
+  /** raised light surface (service cards) */
+  card: "#E9E8E4",
+
+  accent: "#3ADBFF",
+  accentDeep: "#0E8FBF",
+  accentInk: "#0B7EA0",
+  accentPale: "#9FF1FF",
+
+  /** greys reading on dark */
+  mist: "#C4C9D2",
+  fog: "#B6BCC7",
+  dust: "#9BA2B0",
+  slate: "#8A8F9C",
+  shadow: "#7E8593",
+
+  /** greys reading on light */
+  graphite: "#3D4149",
+  steel: "#4A4E57",
+  stone: "#5A5E67",
+  ash: "#6B6F78",
 } as const;
 
 export const Z = {
   webgl: 0,
   scene: 10,
-  hud: 40,
-  nav: 50,
-  cursor: 60,
-  grain: 70,
-  preloader: 80,
+  rail: 90,
+  nav: 100,
+  cursor: 150,
+  preloader: 200,
 } as const;
 
 export const BREAKPOINTS = {
@@ -33,11 +54,32 @@ export const MEDIA = {
   heroVideo1080: "/hero/genesis-1080.mp4",
   heroVideo720: "/hero/genesis-720.mp4",
   heroPoster: "/hero/genesis-poster.jpg",
-  cosmos: "/media/cosmos.png",
-  obsidian: "/media/obsidian.png",
+  logo: "/logo.png",
   cases: {
-    helios: "/media/cases/helios.webp",
+    mosaram: "/media/cases/mosaram.webp",
     kute: "/media/cases/kute.webp",
     kcpl: "/media/cases/kcpl.webp",
   },
+  founders: {
+    saksham: "/founders/saksham.webp",
+    vinayak: "/founders/vinayak.webp",
+    trisha: "/founders/trisha.webp",
+    shuvam: "/founders/shuvam.webp",
+    reyansh: "/founders/reyansh.png",
+  },
 } as const;
+
+/** Route sections drive the nav pill, the rail and the light/dark theme flip. */
+export type RouteTheme = "dark" | "light";
+export interface RouteDef {
+  path: string;
+  label: string;
+  theme: RouteTheme;
+}
+
+export const ROUTES: readonly RouteDef[] = [
+  { path: "/", label: "Home", theme: "dark" },
+  { path: "/work", label: "Work", theme: "dark" },
+  { path: "/about", label: "About", theme: "light" },
+  { path: "/contact", label: "Contact", theme: "dark" },
+] as const;

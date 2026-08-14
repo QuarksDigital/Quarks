@@ -1,564 +1,306 @@
 "use client";
 
-/**
- * S8 - About. A founder carousel.
- *   • keeps the photo-left / details-right / dot-film design
- *   • desktop: a physics-based directional cursor with a 7s progress ring -
- *     it springs after the pointer with inertia + velocity squash/stretch, and
- *     the arrow does a smooth 3D flip between next (>) and previous (<).
- *     Hovering a half fills the ring and auto-advances; clicking advances now.
- *   • mobile / tablet: left & right arrow buttons (and swipe)
- *   • a bottom loader auto-advances every 7s on touch / when not hovered
- * Add founders by appending to FOUNDERS - everything scales automatically.
- */
-import {
-  type PointerEvent as ReactPointerEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { register, unregister } from "@/animations/core/timelineRegistry";
-import { setHudLabel } from "@/components/persistent/SectionHUD";
-import { getLenis } from "@/components/providers/SmoothScrollProvider";
+import { useRef } from "react";
+import { useSceneTrigger } from "@/hooks/useSceneTrigger";
+import { createFounderScene, type FounderRefs } from "@/animations/scenes/founders";
 import { ABOUT, FOUNDERS } from "@/constants/content";
-import { prefersReducedMotion } from "@/utils/dom";
-
-const AUTO_MS = 7000;
-const RING_R = 30;
-const RING_C = 2 * Math.PI * RING_R;
+import { COLORS } from "@/constants/tokens";
+import { FOUNDERS as FOUNDER_MOTION } from "@/constants/motion";
 
 export default function About() {
-  const n = FOUNDERS.length;
-  const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
-  const slides = useRef<(HTMLDivElement | null)[]>([]);
-  const arrow = useRef<HTMLDivElement>(null);
+  const counter = useRef<HTMLSpanElement>(null);
+  const cursor = useRef<HTMLDivElement>(null);
   const chevron = useRef<SVGSVGElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
   const ring = useRef<SVGCircleElement>(null);
 
-  const indexRef = useRef(0);
-  const animating = useRef(false);
-  const hovered = useRef(false);
-  const inView = useRef(false);
-  const desk = useRef(false);
-  const acc = useRef(0);
-  const dir = useRef<1 | -1>(1);
-  const swipeX = useRef(0);
-
-  const [active, setActive] = useState(0);
-
-  const resetRing = useCallback(() => {
-    if (ring.current) ring.current.style.strokeDashoffset = String(RING_C);
-  }, []);
-
-  const resetTimer = useCallback(() => {
-    acc.current = 0;
-    if (bar.current) gsap.set(bar.current, { scaleX: 0 });
-    resetRing();
-  }, [resetRing]);
-
-  const go = useCallback(
-    (target: number, d: 1 | -1) => {
-      if (animating.current || n < 2) return;
-      const from = indexRef.current;
-      const t = ((target % n) + n) % n;
-      if (t === from) return;
-      const cur = slides.current[from];
-      const nxt = slides.current[t];
-      if (!cur || !nxt) return;
-
-      animating.current = true;
-      indexRef.current = t;
-      setActive(t);
-      resetTimer();
-
-      const reduced = prefersReducedMotion();
-      const dur = reduced ? 0.001 : 0.9;
-
-      gsap.set(nxt, {
-        xPercent: d === 1 ? 100 : -100,
-        visibility: "visible",
-        zIndex: 2,
-      });
-      gsap.set(cur, { zIndex: 1 });
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.set(cur, { visibility: "hidden" });
-          animating.current = false;
-        },
-      });
-      tl.to(
-        cur,
-        { xPercent: d === 1 ? -100 : 100, duration: dur, ease: "power3.inOut" },
-        0,
-      ).to(nxt, { xPercent: 0, duration: dur, ease: "power3.inOut" }, 0);
-
-      const det = nxt.querySelector<HTMLElement>(".founder-details");
-      if (det && !reduced) {
-        tl.fromTo(
-          det.children,
-          { autoAlpha: 0, y: 26, filter: "blur(10px)" },
-          {
-            autoAlpha: 1,
-            y: 0,
-            filter: "blur(0px)",
-            stagger: 0.08,
-            duration: 0.55,
-            ease: "power2.out",
-          },
-          0.4,
-        );
-      }
+  useSceneTrigger<FounderRefs>((args) => createFounderScene(args), {
+    get stage() {
+      return stage.current;
     },
-    [n, resetTimer],
+    get counter() {
+      return counter.current;
+    },
+    get cursor() {
+      return cursor.current;
+    },
+    get chevron() {
+      return chevron.current as unknown as HTMLElement | null;
+    },
+    get ring() {
+      return ring.current;
+    },
+  });
+
+  const arrow = (d: -1 | 1) => (
+    <button
+      type="button"
+      data-farrow={d}
+      data-cursor="link"
+      aria-label={d === -1 ? "Previous founder" : "Next founder"}
+      className="absolute bottom-[84px] z-[3] flex h-[46px] w-[46px] items-center justify-center rounded-full"
+      style={{
+        [d === -1 ? "left" : "right"]: 16,
+        border: "1px solid rgba(241,240,236,.18)",
+        background: "rgba(241,240,236,.06)",
+      }}
+    >
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path
+          d={d === -1 ? "M15 18l-6-6 6-6" : "M9 6l6 6-6 6"}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
   );
-
-  const step = useCallback((d: 1 | -1) => go(indexRef.current + d, d), [go]);
-
-  // initial slide layout + HUD trigger + in-view observer
-  useEffect(() => {
-    slides.current.forEach((s, i) => {
-      if (s)
-        gsap.set(s, {
-          xPercent: i === 0 ? 0 : 100,
-          visibility: i === 0 ? "visible" : "hidden",
-        });
-    });
-
-    const st = register(
-      ScrollTrigger.create({
-        trigger: section.current,
-        start: "top 60%",
-        end: "bottom 40%",
-        onEnter: () => setHudLabel(ABOUT.hudLabel),
-        onEnterBack: () => setHudLabel(ABOUT.hudLabel),
-        onToggle: (self) => {
-          inView.current = self.isActive;
-        },
-      }),
-    );
-
-    return () => {
-      unregister(st);
-      st.kill();
-    };
-  }, []);
-
-  // auto-advance loader.
-  //  - desktop: the countdown fills the cursor ring while the pointer hovers the
-  //    stage; on completion it advances in the hovered direction.
-  //  - touch / non-desktop: the bottom bar fills while the section is in view.
-  useEffect(() => {
-    if (n < 2) return;
-    let raf = 0;
-    let last = performance.now();
-    const reduced = prefersReducedMotion();
-    const tick = (t: number) => {
-      raf = requestAnimationFrame(tick);
-      const dt = t - last;
-      last = t;
-      if (reduced) return;
-
-      if (desk.current) {
-        if (!hovered.current || animating.current) return;
-        acc.current += dt;
-        const p = Math.min(acc.current / AUTO_MS, 1);
-        if (ring.current)
-          ring.current.style.strokeDashoffset = String(RING_C * (1 - p));
-        if (acc.current >= AUTO_MS) {
-          acc.current = 0;
-          step(dir.current);
-        }
-      } else {
-        if (!inView.current || animating.current) return;
-        acc.current += dt;
-        if (bar.current)
-          gsap.set(bar.current, { scaleX: Math.min(acc.current / AUTO_MS, 1) });
-        if (acc.current >= AUTO_MS) {
-          acc.current = 0;
-          step(1);
-        }
-      }
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [n, step]);
-
-  // desktop directional cursor: spring inertia + squash/stretch + 3D arrow flip
-  useEffect(() => {
-    const stg = stage.current;
-    const ar = arrow.current;
-    const chev = chevron.current;
-    const hasFinePointer =
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    desk.current =
-      window.innerWidth >= 1024 && hasFinePointer && !prefersReducedMotion();
-    if (!stg || !ar || !desk.current) return;
-
-    gsap.set(ar, { xPercent: -50, yPercent: -50, autoAlpha: 0 });
-    resetRing();
-
-    let tx = window.innerWidth / 2;
-    let ty = window.innerHeight / 2;
-    let px = tx;
-    let py = ty;
-    let vx = 0;
-    let vy = 0;
-    let visScale = 0.6;
-    let started = false;
-
-    const flip = (d: 1 | -1) => {
-      if (!chev) return;
-      gsap.to(chev, {
-        rotationY: d === 1 ? 0 : 180,
-        duration: 0.55,
-        ease: "back.out(1.7)",
-        overwrite: "auto",
-      });
-      gsap.fromTo(
-        chev,
-        { scale: 0.65 },
-        { scale: 1, duration: 0.5, ease: "back.out(2.2)" },
-      );
-    };
-
-    const onMove = (e: PointerEvent) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      if (!started) {
-        px = tx;
-        py = ty;
-        started = true;
-      }
-      const d: 1 | -1 = e.clientX > window.innerWidth / 2 ? 1 : -1;
-      if (d !== dir.current) {
-        dir.current = d;
-        acc.current = 0;
-        resetRing();
-        flip(d);
-      }
-    };
-    const onEnter = () => {
-      hovered.current = true;
-      acc.current = 0;
-      resetRing();
-      gsap.to(ar, { autoAlpha: 1, duration: 0.3, ease: "expo.out" });
-    };
-    const onLeave = () => {
-      hovered.current = false;
-      acc.current = 0;
-      resetRing();
-      gsap.to(ar, { autoAlpha: 0, duration: 0.25, ease: "power2.in" });
-    };
-    const onClick = (e: MouseEvent) => {
-      if (animating.current) return;
-      if ((e.target as HTMLElement)?.closest("button")) return;
-      step(dir.current);
-    };
-
-    // spring integrator
-    const STIFF = 0.2;
-    const DAMP = 0.74;
-    let raf = 0;
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
-      vx = (vx + (tx - px) * STIFF) * DAMP;
-      vy = (vy + (ty - py) * STIFF) * DAMP;
-      px += vx;
-      py += vy;
-      const speed = Math.hypot(vx, vy);
-      const stretch = Math.min(speed * 0.02, 0.4);
-      const angle = Math.atan2(vy, vx) * (180 / Math.PI);
-      const rot = Math.max(-16, Math.min(16, angle * stretch * 0.8));
-      visScale += ((hovered.current ? 1 : 0.6) - visScale) * 0.2;
-      gsap.set(ar, {
-        x: px,
-        y: py,
-        xPercent: -50,
-        yPercent: -50,
-        rotation: rot,
-        scaleX: (1 + stretch) * visScale,
-        scaleY: (1 - stretch * 0.55) * visScale,
-      });
-    };
-    raf = requestAnimationFrame(tick);
-
-    stg.addEventListener("pointermove", onMove);
-    stg.addEventListener("pointerenter", onEnter);
-    stg.addEventListener("pointerleave", onLeave);
-    stg.addEventListener("click", onClick);
-    return () => {
-      cancelAnimationFrame(raf);
-      stg.removeEventListener("pointermove", onMove);
-      stg.removeEventListener("pointerenter", onEnter);
-      stg.removeEventListener("pointerleave", onLeave);
-      stg.removeEventListener("click", onClick);
-    };
-  }, [step, resetRing]);
-
-  // Lenis snap: settle the About section to the screen on scroll-idle.
-  useEffect(() => {
-    const el = section.current;
-    if (!el || prefersReducedMotion()) return;
-    let idle: ReturnType<typeof setTimeout>;
-    let cooldownUntil = 0;
-    const onScroll = () => {
-      clearTimeout(idle);
-      idle = setTimeout(() => {
-        if (performance.now() < cooldownUntil) return;
-        const lenis = getLenis();
-        if (!lenis) return;
-        const off = el.getBoundingClientRect().top;
-        const band = window.innerHeight * 0.32;
-        if (Math.abs(off) > 2 && Math.abs(off) < band) {
-          cooldownUntil = performance.now() + 1000;
-          lenis.scrollTo(window.scrollY + off, {
-            duration: 0.7,
-            easing: (x: number) => 1 - Math.pow(1 - x, 3),
-            lock: false,
-            onComplete: () => {
-              cooldownUntil = performance.now() + 250;
-            },
-          });
-        }
-      }, 150);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(idle);
-    };
-  }, []);
-
-  // touch swipe
-  const onPointerDown = (e: ReactPointerEvent) => {
-    if (e.pointerType !== "touch") return;
-    swipeX.current = e.clientX;
-  };
-  const onPointerUp = (e: ReactPointerEvent) => {
-    if (e.pointerType !== "touch") return;
-    const dx = e.clientX - swipeX.current;
-    if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
-  };
 
   return (
     <section
-      ref={section}
-      id="about"
-      aria-label="About Quarks - our team"
-      className="relative mt-[14vh]"
-      style={{ zIndex: "var(--z-scene)" }}
+      data-route="/about"
+      data-theme="light"
+      aria-label="About Quarks"
+      className="route-cap relative"
+      style={{
+        background: COLORS.bone,
+        color: COLORS.ink,
+        zIndex: 4,
+        padding: "clamp(90px,13vh,160px) var(--gutter) clamp(80px,11vh,140px)",
+      }}
     >
-      <div
-        ref={stage}
-        data-cursor="hidden"
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        className="relative h-screen w-full overflow-hidden bg-void"
-      >
-        {/* header */}
-        
-        {n > 1 && (
-          <div className="pointer-events-none absolute right-6 top-8 z-20 md:right-16 md:top-12">
-            <p className="type-mono text-[#ffffff]/60">
-              <span className="text-starlight">
-                {String(active + 1).padStart(2, "0")}
-              </span>{" "}
-              / {String(n).padStart(2, "0")}
-            </p>
-          </div>
-        )}
+      <div className="mx-auto" style={{ maxWidth: "var(--measure)" }}>
+        <p className="type-mono" style={{ color: COLORS.ash, marginBottom: 22 }}>
+          {ABOUT.index}
+        </p>
 
-        {/* slides */}
-        {FOUNDERS.map((f, i) => {
-          const idx =
-            f.index ??
-            `${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
-          return (
+        <h2
+          data-split
+          className="type-display m-0"
+          style={{ maxWidth: "19ch", fontSize: "clamp(32px,5.6vw,84px)", lineHeight: 1 }}
+        >
+          {ABOUT.heading}
+        </h2>
+
+        <p
+          data-split
+          className="font-light"
+          style={{
+            margin: "clamp(26px,4vh,44px) 0 0",
+            maxWidth: "62ch",
+            fontSize: "clamp(15px,1.3vw,18px)",
+            lineHeight: 1.65,
+            color: COLORS.stone,
+          }}
+        >
+          {ABOUT.body}
+        </p>
+
+        {/* ── stats ─────────────────────────────────────────────────────── */}
+        <div
+          className="grid gap-px"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))",
+            background: "var(--hairline-light)",
+            margin: "clamp(48px,7vh,90px) 0",
+            borderTop: "1px solid var(--hairline-light)",
+            borderBottom: "1px solid var(--hairline-light)",
+          }}
+        >
+          {ABOUT.stats.map((s) => (
             <div
-              key={f.id}
-              ref={(el) => {
-                slides.current[i] = el;
+              key={s.label}
+              style={{
+                background: COLORS.bone,
+                padding: "clamp(26px,3.4vw,42px) clamp(18px,2vw,30px)",
               }}
-              className="absolute inset-0"
             >
-              {/* photo */}
+              <div
+                className="flex items-baseline gap-0.5 font-medium"
+                style={{
+                  fontSize: "clamp(38px,5.6vw,78px)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.045em",
+                }}
+              >
+                <span data-count={s.value}>0</span>
+                <span>{s.suffix}</span>
+              </div>
+              <div
+                className="type-mono-tight mt-3.5"
+                style={{ color: COLORS.ash, letterSpacing: "0.2em" }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── founder stage ─────────────────────────────────────────────── */}
+        <div
+          ref={stage}
+          data-q="fstage"
+          data-cursor="hidden"
+          className="relative overflow-hidden rounded-[22px]"
+          style={{ height: "min(82vh,720px)", background: COLORS.void, color: COLORS.bone }}
+        >
+          {FOUNDERS.map((f) => (
+            <div key={f.name} data-slide className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={f.photoFull}
+                  src={f.photo}
                   alt={f.name}
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: f.objectPos ?? "30% 38%" }}
                   draggable={false}
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: f.position }}
                 />
-                <div className="dot-film absolute inset-0" />
-                <div className="dot-film-fine absolute inset-0" />
+                <div aria-hidden="true" className="dot-film absolute inset-0" />
+                <div aria-hidden="true" className="dot-film-fine absolute inset-0" />
                 <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, rgba(4,4,10,0) 26%, rgba(4,4,10,0.45) 52%, rgba(4,4,10,0.93) 100%)",
-                  }}
+                  aria-hidden="true"
+                  className="fstage-wash pointer-events-none absolute inset-0"
                 />
                 <div
+                  aria-hidden="true"
                   className="pointer-events-none absolute inset-0"
-                  style={{
-                    boxShadow: "inset 0 -120px 160px -40px rgba(4,4,10,0.9)",
-                  }}
+                  style={{ boxShadow: "inset 0 -120px 160px -40px rgba(4,4,10,.9)" }}
                 />
               </div>
 
-              {/* details */}
-              <div className="absolute inset-y-0 right-0 flex w-full items-center px-8 md:w-[50%] md:px-16">
-                <div className="founder-details">
-                  <p className="type-mono text-cherenkov-700">{idx}</p>
+              <div
+                data-q="fdetails-col"
+                className="pointer-events-none absolute bottom-0 right-0 top-0 flex items-center"
+              >
+                <div data-fdetails>
+                  <div
+                    className="type-mono-tight"
+                    style={{ color: COLORS.accentDeep, letterSpacing: "0.22em" }}
+                  >
+                    {f.index}
+                  </div>
                   <h3
-                    className="type-display mt-4 text-starlight"
-                    style={{ fontSize: "clamp(2.6rem, 7vw, 6rem)" }}
+                    className="mt-3.5 font-semibold"
+                    style={{
+                      fontSize: "var(--founder-name)",
+                      lineHeight: 0.95,
+                      letterSpacing: "-0.045em",
+                    }}
                   >
                     {f.name}
                   </h3>
-                  <p className="type-mono mt-4 text-cherenkov-300">{f.role}</p>
-                  <div className="mt-8 space-y-3">
-                    {f.details.map((d) => (
-                      <p
-                        key={d}
-                        className="max-w-sm text-[#ffffff]/60"
-                        style={{ lineHeight: 1.65 }}
-                      >
-                        {d}
-                      </p>
-                    ))}
+                  <div
+                    className="type-mono-tight mt-4"
+                    style={{ color: COLORS.accentPale, letterSpacing: "0.2em" }}
+                  >
+                    {f.role}
                   </div>
+                  <p
+                    className="mt-[26px] font-light"
+                    style={{
+                      maxWidth: "38ch",
+                      fontSize: 15,
+                      lineHeight: 1.65,
+                      color: "rgba(255,255,255,.62)",
+                    }}
+                  >
+                    {f.bio}
+                  </p>
+                  {f.detail && (
+                    <p
+                      className="mt-3 font-light"
+                      style={{
+                        maxWidth: "38ch",
+                        fontSize: 15,
+                        lineHeight: 1.65,
+                        color: "rgba(255,255,255,.62)",
+                      }}
+                    >
+                      {f.detail}
+                    </p>
+                  )}
+                  {f.quote && (
+                    <p
+                      className="mt-3 font-light italic"
+                      style={{
+                        maxWidth: "38ch",
+                        fontSize: 14,
+                        lineHeight: 1.65,
+                        color: "rgba(159,241,255,.72)",
+                      }}
+                    >
+                      {f.quote}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))}
 
-        {/* mobile / tablet arrow buttons */}
-        {n > 1 && (
-          <>
-            <button
-              type="button"
-              aria-label="Previous founder"
-              data-cursor="link"
-              onClick={() => step(-1)}
-              className="absolute bottom-24 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  d="M15 18l-6-6 6-6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label="Next founder"
-              data-cursor="link"
-              onClick={() => step(1)}
-              className="absolute bottom-24 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/5 text-starlight backdrop-blur-md transition-colors hover:border-cherenkov-500/50 hover:text-cherenkov-300 lg:hidden"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  d="M9 6l6 6-6 6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </>
-        )}
-
-        {/* bottom dots (+ touch loader; the desktop loader lives on the cursor) */}
-        {n > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center gap-4 pb-8">
-            <div className="flex gap-2">
-              {FOUNDERS.map((f, i) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  aria-label={`Go to ${f.name}`}
-                  data-cursor="link"
-                  onClick={() => go(i, i >= indexRef.current ? 1 : -1)}
-                  className="h-1.5 rounded-full transition-all duration-500"
-                  style={{
-                    width: i === active ? 28 : 8,
-                    background:
-                      i === active
-                        ? "var(--color-cherenkov-500)"
-                        : "rgba(242,245,250,0.25)",
-                    boxShadow:
-                      i === active ? "0 0 10px rgba(56,219,255,0.7)" : "none",
-                  }}
-                />
-              ))}
-            </div>
-            <div className="h-px w-40 overflow-hidden bg-white/12 md:w-64 lg:hidden">
-              <span
-                ref={bar}
-                className="block h-full origin-left bg-cherenkov-500"
-                style={{
-                  transform: "scaleX(0)",
-                  boxShadow: "0 0 8px rgba(56,219,255,0.8)",
-                }}
-              />
-            </div>
+          <div
+            className="type-mono-tight absolute"
+            style={{
+              right: "clamp(18px,3vw,40px)",
+              top: "clamp(18px,3vh,34px)",
+              color: "rgba(255,255,255,.55)",
+              letterSpacing: "0.2em",
+            }}
+          >
+            <span ref={counter} style={{ color: COLORS.bone }}>
+              01
+            </span>{" "}
+            / {String(FOUNDERS.length).padStart(2, "0")}
           </div>
-        )}
+
+          {arrow(-1)}
+          {arrow(1)}
+
+          <div className="absolute bottom-0 left-0 right-0 z-[3] flex justify-center gap-2 pb-[30px]">
+            {FOUNDERS.map((f) => (
+              <button
+                key={f.name}
+                type="button"
+                data-fdot
+                data-cursor="link"
+                aria-label={f.name}
+                className="h-1.5 w-[7px] rounded-full"
+                style={{ background: "rgba(241,240,236,.28)" }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* desktop directional cursor: physics + progress ring + 3D flip */}
+      {/* Ring cursor doubles as the dwell timer for auto-advance. */}
       <div
-        ref={arrow}
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 hidden h-16 w-16 items-center justify-center rounded-full border border-cherenkov-500/20 bg-cherenkov-500/10 backdrop-blur-md lg:flex"
-        style={{ zIndex: "var(--z-cursor)", opacity: 0, perspective: 420 }}
+        ref={cursor}
+        data-q="fcursor"
+        aria-hidden="true"
+        className="pointer-events-none fixed left-0 top-0 flex h-16 w-16 items-center justify-center rounded-full opacity-0"
+        style={{
+          border: "1px solid rgba(58,219,255,.22)",
+          background: "rgba(58,219,255,.10)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          zIndex: "calc(var(--z-cursor) + 1)",
+        }}
       >
         <svg
-          className="absolute inset-0 h-full w-full -rotate-90"
           viewBox="0 0 64 64"
           fill="none"
+          className="absolute inset-0 h-full w-full"
+          style={{ transform: "rotate(-90deg)" }}
         >
-          <circle
-            cx="32"
-            cy="32"
-            r={RING_R}
-            stroke="rgba(56,219,255,0.15)"
-            strokeWidth="2"
-          />
+          <circle cx="32" cy="32" r="30" stroke="rgba(56,219,255,0.15)" strokeWidth="2" />
           <circle
             ref={ring}
             cx="32"
             cy="32"
-            r={RING_R}
-            stroke="var(--color-cherenkov-300)"
+            r="30"
+            stroke={COLORS.accentPale}
             strokeWidth="2.5"
             strokeLinecap="round"
-            strokeDasharray={RING_C}
-            strokeDashoffset={RING_C}
-            style={{ filter: "drop-shadow(0 0 4px rgba(56,219,255,0.7))" }}
+            strokeDasharray={FOUNDER_MOTION.ringCircumference}
+            strokeDashoffset={FOUNDER_MOTION.ringCircumference}
           />
         </svg>
         <svg
@@ -567,7 +309,7 @@ export default function About() {
           height="22"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="var(--color-cherenkov-300)"
+          stroke={COLORS.accentPale}
           strokeWidth="2"
         >
           <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />

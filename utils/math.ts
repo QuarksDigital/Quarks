@@ -11,7 +11,7 @@ export const mapRange = (
   outMax: number,
 ): number => outMin + ((v - inMin) / (inMax - inMin)) * (outMax - outMin);
 
-/** progress of v within [a,b], clamped 0–1 */
+/** progress of v within [a,b], clamped 0-1 */
 export const window01 = (v: number, a: number, b: number): number =>
   clamp((v - a) / (b - a), 0, 1);
 

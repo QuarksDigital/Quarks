@@ -1,339 +1,272 @@
 /** QUARKS - all copy. No strings inside components. */
+import { MEDIA } from "@/constants/tokens";
 
 export const SITE = {
   name: "QUARKS",
   tagline: "From Invisible to Inevitable.",
   subline: "A DIGITAL MARKETING AGENCY",
   description:
-    "Quarks is a digital marketing agency that engineers attention at the fundamental level. We guarantee permanent impact. We provide a full suite of services, from UI/UX design to 3D experiences and full stack development. Our services also include optimization of SEO/GEO, digital marketing, and social media management.",
+    "Quarks is a digital product and growth studio. We design and build websites, apps and 3D experiences, then run the SEO, ASO, automation and social that make them impossible to ignore.",
   emailNew: "quarksdigitalmarketing@gmail.com",
   emailElse: "quarks.questions@gmail.com",
+  city: "Bhubaneswar, Odisha",
   coordinates: "20.296059° N · 85.824539° E",
+  readout: "quarks.studio",
+  instagram: "https://www.instagram.com/quarksdigital",
+  linkedin: "https://www.linkedin.com/company/quarksdigital/",
 } as const;
 
-export const HERO = {
-  scrollHint: "SCROLL TO EXPLORE",
-  hudBoot: "INITIALIZING",
-  hudLabel: "S1 · THE VOID",
+export const PRELOADER = {
+  status: "Assembling matter",
 } as const;
 
-export const MANIFESTO = {
-  hudLabel: "S2 · THE DIMENSION",
-  lines: ["Everything that matters", "is made of things", "you can't see."],
-  particles: "ATTENTION · INSIGHT · IDEAS - THE PARTICLES OF CULTURE.",
-} as const;
-
-export interface ForceDef {
-  id: string;
-  index: string;
-  name: string;
-  service: string;
-  line: string;
-  tags: [string, string, string];
-  symbol: "experience" | "seo" | "performance" | "presence";
-}
-
-export const FORCES: readonly ForceDef[] = [
-  {
-    id: "experience",
-    index: "FORCE 01 / 04",
-    name: "EXPERIENCE",
-    service: "Design & Development",
-    line: "We don't create websites, we create unique digital experiences.",
-    tags: ["Design Language", "3D", "Interactive"],
-    symbol: "experience",
-  },
-  {
-    id: "seo",
-    index: "FORCE 02 / 04",
-    name: "SEO",
-    service: "Reach & Growth",
-    line: "Attraction, engineered.",
-    tags: ["Search", "Real-time", "CRO"],
-    symbol: "seo",
-  },
-  {
-    id: "performance",
-    index: "FORCE 03 / 04",
-    name: "PERFORMANCE",
-    service: "High FPS & Optimization",
-    line: "Experiences that run fast, smooth, and seamless.",
-    tags: ["High FPS", "Low LCP", "Optimization"],
-    symbol: "performance",
-  },
-  {
-    id: "presence",
-    index: "FORCE 04 / 04",
-    name: "PRESENCE",
-    service: "Content & Social",
-    line: "Amass attention, build communities, and grow your audience.",
-    tags: ["Content engines", "Social", "Community"],
-    symbol: "presence",
-  },
-] as const;
-
-export const FORCES_HUD = "S3 · THE FORCES";
-
-export interface CollisionDef {
-  id: string;
-  index: string;
-  product: string;
-  client: string;
-  sector: string;
-  year: string;
-  image: string;
-  metrics: { value: number; prefix?: string; suffix: string; label: string }[];
-}
-
-export const COLLISIONS: readonly CollisionDef[] = [
-  {
-    id: "mosaram",
-    index: "COLLISION 001",
-    product: "MOSARAM",
-    client: "MOSARAM",
-    sector: "Automobile Industry",
-    year: "2026",
-    image: "/media/cases/helios.webp",
-    metrics: [
-      { value: 60, prefix: "+", suffix: "%", label: "Organic visits" },
-      { value: 1.5, suffix: "K", label: "Launch views" },
-      { value: 20, suffix: "%", label: "Increase in sales" },
-    ],
-  },
-  {
-    id: "kute",
-    index: "COLLISION 002",
-    product: "KUTE",
-    client: "FlaminCo",
-    sector: "Dating",
-    year: "2025",
-    image: "/media/cases/kute.webp",
-    metrics: [
-      { value: 1, suffix: "K", label: "Installs / 90 days" },
-      { value: 4.3, suffix: "★", label: "Store rating" },
-      { value: 70, prefix: "+", suffix: "%", label: "Faster" },
-    ],
-  },
-  {
-    id: "kcpl",
-    index: "COLLISION 003",
-    product: "KCPL",
-    client: "KCPL",
-    sector: "Workstation Distribution",
-    year: "2026",
-    image: "/media/cases/kcpl.webp",
-    metrics: [
-      { value: 25, prefix: "+", suffix: "%", label: "Orders Increase" },
-      { value: 500, suffix: "+", label: "Waitlist" },
-      { value: 3, suffix: "", label: "Cities" },
-    ],
-  },
-] as const;
-
-export const COLLISIONS_HUD = "S4 · COLLISIONS";
-
-export interface PrincipleDef {
-  id: string;
-  index: string;
-  name: string;
-  line: string;
-  tags: [string, string];
-  symbol: "innovation" | "results" | "transparency" | "growth";
-}
-
-export const ABOUT_US = {
-  hudLabel: "S5 · THE FIELD",
-  eyebrow: "ABOUT US",
-  headline: "Different particles,",
-  headlineAccent: "one field.",
-  body: "Quarks is a small, obsessive team of strategists, designers and engineers. We compress very different skills into a single coherent force - research, design, code and distribution moving as one - so ideas that start invisible end up inevitable.",
-  principles: [
-    {
-      id: "development",
-      index: "PRINCIPLE 01 / 04",
-      name: "DEVELOPMENT",
-      line: "We build what doesn't exist yet - every engagement starts from first principles, never from a template.",
-      tags: ["First principles", "R&D"],
-      symbol: "innovation",
-    },
-    {
-      id: "seo",
-      index: "PRINCIPLE 02 / 04",
-      name: "SEO & ASO",
-      line: "Craft is measured. Every experience we ship is tied to a number that has to move.",
-      tags: ["Measured", "Accountable"],
-      symbol: "results",
-    },
-    {
-      id: "design",
-      index: "PRINCIPLE 03 / 04",
-      name: "DESIGN",
-      line: "Every interface is crafted to turn attention into action-combining aesthetics, usability, and conversion-focused design.",
-      tags: ["User-first", "Conversion"],
-      symbol: "transparency",
-    },
-    {
-      id: "marketing",
-      index: "PRINCIPLE 04 / 04",
-      name: "MARKETING",
-      line: "From content to paid campaigns, we build marketing systems that attract, convert, and retain the right audience.",
-      tags: ["Performance", "Growth"],
-      symbol: "growth",
-    },
-  ] as readonly PrincipleDef[],
-} as const;
-
-export const SCALE_STEPS = [
-  {
-    index: "01",
-    name: "OBSERVE",
-    line: "Research & Insight - Market analysis.",
-  },
-  { index: "02", name: "BIND", line: "Strategy - that holds ideas together." },
-  {
-    index: "03",
-    name: "COLLIDE",
-    line: "Creativity - where new ideas are made.",
-  },
-  {
-    index: "04",
-    name: "ACCELERATE",
-    line: "Launch & Promote - exposure beyond measure.",
-  },
-  {
-    index: "05",
-    name: "ORBIT",
-    line: "Optimize & Retain - audiences that never leave.",
-  },
-] as const;
-
-export const SCALE_HUD = "S6 · THE SCALE";
-
-export const PROOF = {
-  hudLabel: "S7 · PROOF",
-  stats: [
-    { value: 15, suffix: "+", label: "PRODUCTS" },
-    { value: 100000, suffix: "+", label: "LIVES IMPACTED" },
-    { value: 10, suffix: "+", label: "COLLABORATIONS" },
-  ],
-} as const;
-
-export const CONTACT = {
-  hudLabel: "S8 · GRAVITY WELL",
-  headline: "Let's Connect.",
-  cta: "LET'S CONNECT",
-  rows: [
-    { label: "QUARKS", value: "quarksdigitalmarketing@gmail.com" },
-    { label: "QUESTIONS", value: "quarks.questions@gmail.com" },
-  ],
-  socials: [
-    { name: "Instagram", link: "https://www.instagram.com/quarksdigital" },
-    {
-      name: "LinkedIn",
-      link: "https://www.linkedin.com/company/quarksdigital/",
-    },
-    // { name: "X", link: "#" },
-  ],
-  backToTop: "SCROLL UP",
-  legal: "© 2026 QUARKS. All matter reserved.",
-} as const;
-
-export interface FounderDef {
-  /** stable id, also used for React keys */
-  id: string;
-  /** display name (revealed word by word) */
-  name: string;
-  /** position / title line */
-  role: string;
-  /** extra detail lines shown under the role (each revealed word by word) */
-  details: string[];
-  /** full landscape photo in /public/founders - face toward the left */
-  photoFull: string;
-  /** optional CSS object-position for the photo crop (default "30% 38%") */
-  objectPos?: string;
-  /** optional mono index label; auto-filled from position if omitted */
-  index?: string;
-}
-
-/**
- * ABOUT - the founders. To add a founder later: drop a background-removed head
- * cutout into /public/founders/NAME.png and append one entry below.
- */
-export const FOUNDERS: readonly FounderDef[] = [
-  {
-    id: "saksham",
-    name: "SAKSHAM",
-    role: "CO-FOUNDER · CHIEF TECHNOLOGY OFFICER",
-    details: [
-      "Development & Implementation.",
-      "Obsessed with the physics of attention.",
-      '"Believe in yourself and the world shall too." ~Saksham Sinha',
-    ],
-    photoFull: "/founders/saksham.webp",
-  },
-  {
-    id: "founder-2",
-    name: "VINAYAK",
-    role: "CO-FOUNDER · GROWTH EXPERT",
-    details: [
-      "Market research and growth strategy.",
-      "Love for data-driven marketing and analytics.",
-      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
-    ],
-    photoFull: "/founders/vinayak.webp",
-  },
-  {
-    id: "founder-3",
-    name: "TRISHA",
-    role: "CO-FOUNDER · CREATIVE HEAD",
-    details: [
-      "Creative direction and brand strategy.",
-      "Love for storytelling and visual communication.",
-      '"It is not the eye that sees the beauty but the heart that feels it." ~Trisha Jain',
-    ],
-    photoFull: "/founders/trisha.webp",
-  },
-  {
-    id: "founder-4",
-    name: "SHUVAM",
-    role: "CO-FOUNDER · PRODUCT HEAD",
-    details: [
-      "Product design and feature development.",
-      "Love for creating user-centric products and experiences.",
-      '"The best way to predict the future is to create it." ~Shuvam Kumar Sahu',
-    ],
-    photoFull: "/founders/shuvam.webp",
-    objectPos: "10% 40%",
-  },
-  {
-    id: "reyansh",
-    name: "REYANSH",
-    role: "CO-FOUNDER · CHIEF FINANCIAL OFFICER",
-    details: [
-      "Financial planning, budgeting, and business strategy.",
-      "Passionate about turning numbers into sustainable growth.",
-      '"Great business is built not just by earning more, but by managing wisely." ~Reyansh Singh',
-    ],
-    photoFull: "/founders/reyansh.png",
-  },
-] as const;
-
-export const ABOUT = {
-  hudLabel: "S9 · THE OBSERVERS",
-  eyebrow: "ABOUT US",
-  introTitle:
-    "UI/UX Design, 3D Experiences & Full Stack Development. We do it all. We compile a plathera of skills into one coherent force. From App development to Web Development and design, we engineer attention at the fundamental level. We guarantee permanent impact.",
-  introBody:
-    "Quarks is a small, obsessive team of specialists - strategists, designers, engineers and entrepreneurs. We organise and compile very different skills into one coherent force, so ideas that start invisible end up inevitable. Different particles, one field.",
-  triggerLabel: "ABOUT US",
-  closeLabel: "CLOSE",
+export const AUDIO = {
+  track: "/sounds/background.mp3",
+  /** Quiet enough to sit under the experience rather than compete with it. */
+  volume: 0.3,
+  labelOn: "Mute background audio",
+  labelOff: "Play background audio",
 } as const;
 
 export const NAV = {
+  cta: "Start a project",
+  /** narrow viewports, where the full label would crowd the pill */
+  ctaShort: "Start",
+  /*
+   * Services sits last because it genuinely is last: it lives past the
+   * threshold gate at the foot of the document, so listing it second put the
+   * furthest destination in the nearest slot.
+   */
   links: [
-    { label: "Excellence", target: "#forces" },
-    { label: "Works", target: "#collisions" },
-    { label: "Process", target: "#scale" },
+    { label: "Home", route: "/" },
+    { label: "Work", route: "/work" },
+    { label: "About", route: "/about" },
+    { label: "Contact", route: "/contact" },
+    { label: "Services", route: "/services" },
   ],
-  cta: "LET'S CONNECT",
+} as const;
+
+export const HERO = {
+  eyebrow: "Digital product & growth studio · Bhubaneswar, India",
+  lines: ["From invisible", "to inevitable."] as const,
+  sub: "We design and build websites, apps and 3D experiences - then run the SEO, ASO, automation and social that make them impossible to ignore.",
+  ctaPrimary: "Start a project",
+  ctaSecondary: "See the work",
+  hint: "SCROLL",
+} as const;
+
+export const INTRO = {
+  index: "01 - What Quarks actually does",
+  heading:
+    "Most agencies stop at the deliverable. We ship the product and the system that grows it.",
+  body: "One team designs the interface, writes the code, tunes the search rankings, automates the back office and runs the channels. No handoffs between four vendors. No one to blame but us.",
+  facts: [
+    {
+      label: "ONE TEAM",
+      line: "Strategy, design, engineering and growth sit in the same room and ship on the same board.",
+    },
+    {
+      label: "ONE TIMELINE",
+      line: "Design starts and marketing starts together, so launch day has an audience already waiting.",
+    },
+    {
+      label: "ONE ACCOUNTABILITY",
+      line: "A founder is on every project. You talk to the people doing the work, not an account manager.",
+    },
+  ],
+} as const;
+
+export interface CaseDef {
+  index: string;
+  name: string;
+  sector: string;
+  year: string;
+  image: string;
+  /**
+   * Live site. Optional on purpose: when a project has no public URL - still
+   * under NDA, shipped to an app store, or simply not launched - the opened
+   * card renders no button at all rather than a dead link to "#".
+   */
+  url?: string;
+  deliver: string;
+  /** One paragraph shown when the card is opened. */
+  summary: string;
+  /** Everything the studio actually did, as chips. */
+  scope: readonly string[];
+  /** Headline outcomes, shown as a small figure grid on the open card. */
+  results: readonly { value: string; label: string }[];
+}
+
+export const WORK = {
+  index: "03 - Selected work",
+  heading: "Products we put into the world.",
+  sub: "Drag or scroll sideways. Every card is one client, one scope, one live URL.",
+  dragLabel: "DRAG",
+  scrollLabel: "SCROLL",
+  visit: "Visit live ↗",
+  claim: "Claim the slot ↗",
+  openHint: "CLICK A CARD",
+  closeHint: "SCROLL TO CLOSE",
+  openSlot: {
+    tag: "SLOT 004 - OPEN",
+    heading: "Your product could sit here next.",
+    meta: "Open slot · 2026",
+    deliver: "Your product, built end to end",
+  },
+} as const;
+
+/*
+ * Copy below the headline figures is placeholder - swap it for the real
+ * story per project. Leave `url` off entirely until a project is public;
+ * that is what suppresses the "Visit live" button on the opened card.
+ */
+export const CASES: readonly CaseDef[] = [
+  {
+    index: "CASE 001",
+    name: "MOSARAM",
+    sector: "Automobile",
+    year: "2026",
+    image: MEDIA.cases.mosaram,
+    deliver: "Brand film · Website · Launch campaign",
+    summary:
+      "A launch built backwards from the showroom floor. We shot the film, built the configurator around it, and ran the campaign that put both in front of buyers in the first week.",
+    scope: ["Brand film", "Web build", "Configurator", "Launch campaign"],
+    results: [
+      { value: "+60%", label: "Organic visits" },
+      { value: "1.5K", label: "Launch views" },
+      { value: "+20%", label: "Increase in sales" },
+    ],
+  },
+  {
+    index: "CASE 002",
+    name: "KUTE",
+    sector: "Dating app · FlaminCo",
+    year: "2025",
+    image: MEDIA.cases.kute,
+    deliver: "Product design · App build · ASO",
+    summary:
+      "A dating product designed around one question: does a match turn into a conversation? Every screen, and the store listing that feeds it, is tuned to that single number.",
+    scope: ["Product design", "React Native", "ASO", "Store creative"],
+    results: [
+      { value: "1K", label: "Installs / 90 days" },
+      { value: "4.3★", label: "Store rating" },
+      { value: "+70%", label: "Faster" },
+    ],
+  },
+  {
+    index: "CASE 003",
+    name: "KCPL",
+    sector: "Streetwear",
+    year: "2026",
+    image: MEDIA.cases.kcpl,
+    deliver: "E-commerce · Drop mechanics · Social",
+    summary:
+      "Drop mechanics that treat scarcity as a feature rather than an accident: a queue that holds, a checkout that survives the spike, and a feed that keeps the next drop warm.",
+    scope: ["E-commerce", "Drop mechanics", "Social", "Retention"],
+    results: [
+      { value: "3x", label: "Drop sell-through" },
+      { value: "<1s", label: "Checkout load" },
+      { value: "+45%", label: "Returning buyers" },
+    ],
+  },
+] as const;
+
+export interface FounderDef {
+  index: string;
+  name: string;
+  role: string;
+  photo: string;
+  position: string;
+  bio: string;
+  detail: string;
+  quote: string;
+}
+
+export const ABOUT = {
+  index: "04 - The studio",
+  heading: "Four founders, one field. Everyone here builds.",
+  body: "Quarks started in Bhubaneswar in 2024 because good products kept losing to worse products with better distribution. We fixed that by refusing to separate the two: the people who design your interface also own how it gets found.",
+  stats: [
+    { value: 10, suffix: "+", label: "Products shipped" },
+    { value: 10000, suffix: "+", label: "Lives impacted" },
+    { value: 9, suffix: "", label: "Countries reached" },
+  ],
+} as const;
+
+export const FOUNDERS: readonly FounderDef[] = [
+  {
+    index: "FOUNDER 01",
+    name: "SAKSHAM",
+    role: "Co-founder · CTO",
+    photo: MEDIA.founders.saksham,
+    position: "30% 30%",
+    bio: "Writes the code that ships. Saksham turns a design file into a product that loads in under a second and holds up under real traffic.",
+    detail:
+      "Next.js, React Native and WebGL are his daily tools; performance budgets and Core Web Vitals are his obsession.",
+    quote: "“If it isn't fast, it isn't finished.”",
+  },
+  {
+    index: "FOUNDER 02",
+    name: "VINAYAK",
+    role: "Co-founder · Growth",
+    photo: MEDIA.founders.vinayak,
+    position: "30% 30%",
+    bio: "Market research and growth strategy. Vinayak decides where the money goes and proves what it brought back.",
+    detail:
+      "He builds the SEO, ASO and paid roadmaps, then reports them as pipeline instead of impressions.",
+    quote: "“Numbers only matter when they tell a story.”",
+  },
+  {
+    index: "FOUNDER 03",
+    name: "TRISHA",
+    role: "Co-founder · Creative",
+    photo: MEDIA.founders.trisha,
+    position: "30% 28%",
+    bio: "Creative direction and brand strategy. Trisha finds the sentence a company can own, then makes everything look like it.",
+    detail:
+      "Campaign concepts, art direction and the content engine that keeps the channels fed after launch.",
+    quote: "“A brand is a promise people can repeat.”",
+  },
+  {
+    index: "FOUNDER 04",
+    name: "SHUVAM",
+    role: "Co-founder · Product",
+    photo: MEDIA.founders.shuvam,
+    position: "12% 34%",
+    bio: "Product design and feature scoping. Shuvam keeps every build pointed at a user who actually exists.",
+    detail:
+      "Research, flows and the interface system - plus the discipline to cut features that don't earn their place.",
+    quote: "“Scope is a design decision.”",
+  },
+  {
+    index: "FOUNDER 05",
+    name: "REYANSH",
+    role: "Co-founder",
+    photo: MEDIA.founders.reyansh,
+    position: "50% 30%",
+    bio: "Reyansh rounds out the founding team, working across client delivery and studio operations.",
+    detail: "",
+    quote: "",
+  },
+] as const;
+
+export const CONTACT = {
+  index: "05 - Start something",
+  heading: "Tell us what you're building.",
+  body: "Send a paragraph about the product, the deadline and the budget range. You'll get a reply from a founder within one working day - not a form auto-response.",
+  secondaryCta: "Just a question",
+  marquee: "FROM INVISIBLE TO INEVITABLE -",
+  backToTop: "Back to top ↑",
+  copyright: "© 2026 Quarks. All matter reserved.",
+  columns: [
+    { label: "Studio", lines: [SITE.city, SITE.coordinates] },
+    { label: "Availability", lines: ["Taking two new builds for Q4 2026. Retainers open now."] },
+  ],
+  follow: {
+    label: "Follow",
+    links: [
+      { label: "Instagram ↗", href: SITE.instagram },
+      { label: "LinkedIn ↗", href: SITE.linkedin },
+    ],
+  },
 } as const;

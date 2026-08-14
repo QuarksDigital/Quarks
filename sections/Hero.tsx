@@ -1,96 +1,153 @@
 "use client";
 
-/** S1 - dumb DOM shell; all motion lives in animations/scenes/hero.ts */
 import { useRef } from "react";
 import { useSceneTrigger } from "@/hooks/useSceneTrigger";
 import { createHeroScene, type HeroRefs } from "@/animations/scenes/hero";
-import { HERO } from "@/constants/content";
-import { MEDIA } from "@/constants/tokens";
+import { scrollToRoute } from "@/lib/scrollTo";
+import { HERO, SITE } from "@/constants/content";
+import { COLORS, MEDIA } from "@/constants/tokens";
 
 export default function Hero() {
-  const section = useRef<HTMLElement>(null);
-  const videoWrap = useRef<HTMLDivElement>(null);
+  const hero = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-  const headline = useRef<HTMLHeadingElement>(null);
-  const subline = useRef<HTMLParagraphElement>(null);
-  const hint = useRef<HTMLDivElement>(null);
 
   useSceneTrigger<HeroRefs>((args) => createHeroScene(args), {
-    get section() {
-      return section.current;
-    },
-    get videoWrap() {
-      return videoWrap.current;
+    get hero() {
+      return hero.current;
     },
     get video() {
       return video.current;
     },
-    get headline() {
-      return headline.current;
-    },
-    get subline() {
-      return subline.current;
-    },
-    get hint() {
-      return hint.current;
-    },
   });
 
   return (
-    <section
-      ref={section}
-      id="top"
-      aria-label="Quarks - from invisible to inevitable"
-      className="relative h-screen overflow-hidden bg-void"
-      style={{ zIndex: "var(--z-scene)" }}
-      data-cursor="hero"
-      data-cursor-label="SCROLL"
-    >
-      <div ref={videoWrap} className="absolute inset-0 will-change-transform">
+    <div ref={hero} data-q="hero" className="relative" style={{ height: "var(--hero-runway)" }}>
+      <div className="sticky top-0 h-screen overflow-hidden">
         <video
           ref={video}
-          className="h-full w-full object-cover"
+          data-q="hero-video"
           src={MEDIA.heroVideo1080}
           poster={MEDIA.heroPoster}
           muted
           playsInline
           preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
         />
+
         <div
+          data-q="hero-veil"
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(4,4,10,0.85) 100%)",
+              "radial-gradient(120% 90% at 50% 45%,rgba(5,6,9,0) 0%,rgba(5,6,9,.55) 62%,rgba(5,6,9,.94) 100%)",
           }}
         />
-      </div>
 
-      <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
-        <h1
-          ref={headline}
-          className="type-display text-starlight"
-          style={{
-            fontSize: "clamp(2.3rem, 7.8vw, 7.5rem)",
-            textShadow: "0 0 40px rgba(4,4,10,0.6)",
-          }}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center text-center"
+          style={{ padding: "0 clamp(20px,6vw,80px)" }}
         >
-          From Invisible to Inevitable
-          <span className="text-cherenkov-500">.</span>
-        </h1>
-        {/* <p ref={subline} className="type-mono mt-6 text-dust">
-          {SITE.subline} - {SITE.name}
-        </p> */}
-      </div>
+          <p
+            data-q="hero-eyebrow"
+            className="type-mono"
+            style={{
+              color: COLORS.dust,
+              letterSpacing: "0.34em",
+              marginBottom: "clamp(20px,3vh,34px)",
+            }}
+          >
+            {HERO.eyebrow}
+          </p>
 
-      <div
-        ref={hint}
-        aria-hidden="true"
-        className="type-mono absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 text-dust"
-      >
-        <span>{HERO.scrollHint}</span>
-        <span className="block h-8 w-px animate-pulse bg-cherenkov-700" />
+          <h1
+            data-q="hero-title"
+            className="m-0 whitespace-nowrap font-medium"
+            style={{
+              fontSize: "clamp(38px,8.6vw,146px)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.045em",
+            }}
+          >
+            {HERO.lines.map((line, i) => (
+              <span
+                key={line}
+                className="block overflow-hidden"
+                style={{ paddingBottom: "0.1em", marginBottom: "-0.1em" }}
+              >
+                <span
+                  data-q="ht-line"
+                  className="block"
+                  style={i === 1 ? { fontStyle: "italic", fontWeight: 300 } : undefined}
+                >
+                  {line}
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <p
+            data-q="hero-sub"
+            className="font-light"
+            style={{
+              margin: "clamp(22px,3.2vh,38px) 0 0",
+              maxWidth: 640,
+              fontSize: "clamp(15px,1.35vw,19px)",
+              lineHeight: 1.55,
+              color: COLORS.fog,
+            }}
+          >
+            {HERO.sub}
+          </p>
+
+          <div
+            data-q="hero-cta"
+            className="flex flex-wrap justify-center gap-3"
+            style={{ marginTop: "clamp(24px,3.4vh,40px)" }}
+          >
+            {/* Both buttons share the .cta box - see globals.css. */}
+            <a
+              href={`mailto:${SITE.emailNew}`}
+              data-magnetic
+              data-cursor="link"
+              className="cta cta-primary"
+            >
+              {HERO.ctaPrimary}
+            </a>
+            <button
+              type="button"
+              data-magnetic
+              data-cursor="link"
+              onClick={() => scrollToRoute("/work")}
+              className="cta cta-secondary"
+            >
+              {HERO.ctaSecondary}
+            </button>
+          </div>
+        </div>
+
+        <div
+          data-q="hero-hint"
+          aria-hidden="true"
+          className="absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
+          style={{ bottom: "var(--hero-hint-bottom)" }}
+        >
+          <span
+            className="type-mono-tight"
+            style={{ fontSize: "9.5px", letterSpacing: "0.28em", color: COLORS.shadow }}
+          >
+            {HERO.hint}
+          </span>
+          <span
+            className="block h-[34px] w-px"
+            style={{
+              background: `linear-gradient(${COLORS.accent},transparent)`,
+              animation: "qhint 2.4s ease-in-out infinite",
+            }}
+          />
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

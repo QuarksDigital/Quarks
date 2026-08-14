@@ -1,77 +1,70 @@
 "use client";
 
 /**
- * S0 - the protagonist is born (Animation Bible §1).
- * Counter accelerates 0→100, ring charges + collapses into the orb,
- * iris reveal hands the orb off to the hero video's particle position.
+ * A counter and a hairline bar fill together, the mark falls away, and the
+ * plate lifts off the top of the screen to hand over to the hero intro.
+ * Scroll is locked until it clears.
  */
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
+import { getLenis } from "@/components/providers/SmoothScrollProvider";
+import { playHeroIntro } from "@/animations/scenes/hero";
+import { PRELOADER, SITE } from "@/constants/content";
+import { COLORS } from "@/constants/tokens";
 import { prefersReducedMotion } from "@/utils/dom";
 
 export default function Preloader() {
   const [done, setDone] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const orbRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<SVGCircleElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
+  const markRef = useRef<HTMLImageElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
-    const counter = counterRef.current;
-    const orbEl = orbRef.current;
-    const ring = ringRef.current;
-    if (!root || !counter || !orbEl || !ring) return;
+    if (!root) return;
 
     if (prefersReducedMotion()) {
-      const t = setTimeout(() => setDone(true), 500);
-      return () => clearTimeout(t);
+      // Skip the sequence, but still hand off on a frame boundary rather than
+      // synchronously inside the effect (which would cascade a second render).
+      playHeroIntro(true);
+      const id = requestAnimationFrame(() => setDone(true));
+      return () => cancelAnimationFrame(id);
     }
 
-    document.documentElement.style.overflow = "hidden";
-    const C = 2 * Math.PI * 44;
-    ring.style.strokeDasharray = `${C}`;
-    ring.style.strokeDashoffset = `${C}`;
+    const lenis = getLenis();
+    lenis?.stop();
 
-    const state = { n: 0 };
+    const counter = { v: 0 };
     const tl = gsap.timeline({
       onComplete: () => {
-        document.documentElement.style.overflow = "";
+        lenis?.start();
         setDone(true);
       },
     });
 
-    tl.fromTo(orbEl, { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2)" }, 0.2)
+    tl.to(barRef.current, { scaleX: 1, duration: 1.5, ease: "power2.inOut" }, 0)
       .to(
-        state,
+        counter,
         {
-          n: 100,
-          duration: 2,
+          v: 100,
+          duration: 1.5,
           ease: "power2.inOut",
           onUpdate: () => {
-            counter.textContent = String(Math.round(state.n)).padStart(3, "0");
+            if (numRef.current) {
+              numRef.current.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            }
           },
         },
-        0.2,
+        0,
       )
-      .to(ring, { strokeDashoffset: 0, duration: 2, ease: "power2.inOut" }, 0.2)
-      .to(ring, { rotation: 270, transformOrigin: "50% 50%", duration: 2, ease: "none" }, 0.2)
-      .to(ring, { scale: 0.1, opacity: 0, transformOrigin: "50% 50%", duration: 0.35, ease: "expo.in" }, 2.25)
-      .to(orbEl, { scale: 1.6, duration: 0.18, ease: "power2.out" }, 2.3)
-      .to(orbEl, { scale: 1, duration: 0.25, ease: "power2.inOut" }, 2.48)
-      .to(
-        root,
-        {
-          clipPath: "circle(0% at 50% 46%)",
-          duration: 0.9,
-          ease: "expo.inOut",
-        },
-        2.6,
-      );
+      .to(markRef.current, { scale: 0.72, opacity: 0, duration: 0.6, ease: "power3.in" }, 1.35)
+      .to(root, { yPercent: -100, duration: 1.1, ease: "expo.inOut" }, 1.5)
+      .add(() => playHeroIntro(), 1.85);
 
     return () => {
       tl.kill();
-      document.documentElement.style.overflow = "";
+      lenis?.start();
     };
   }, []);
 
@@ -80,35 +73,35 @@ export default function Preloader() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 flex items-center justify-center bg-void"
-      style={{ zIndex: "var(--z-preloader)", clipPath: "circle(150% at 50% 46%)" }}
-      aria-label="Loading"
+      data-q="preloader"
+      className="fixed inset-0 flex flex-col items-center justify-center gap-[26px]"
+      style={{ background: COLORS.void, zIndex: "var(--z-preloader)" }}
     >
-      <div className="relative flex items-center justify-center" style={{ marginTop: "-8vh" }}>
-        <svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true">
-          <circle
-            ref={ringRef}
-            cx="50"
-            cy="50"
-            r="44"
-            fill="none"
-            stroke="rgba(56,219,255,0.7)"
-            strokeWidth="1"
-          />
-        </svg>
-        <div
-          ref={orbRef}
-          className="absolute h-3 w-3 rounded-full bg-whitehot"
-          style={{ boxShadow: "0 0 22px 6px rgba(56,219,255,0.85)" }}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={markRef}
+        src="/logo.png"
+        alt={SITE.name}
+        className="h-[54px] w-[54px] object-contain opacity-90"
+      />
+
+      <div
+        className="relative h-px overflow-hidden"
+        style={{ width: "min(360px,58vw)", background: "rgba(241,240,236,.14)" }}
+      >
+        <span
+          ref={barRef}
+          className="absolute inset-0 block origin-left"
+          style={{ background: COLORS.accent, transform: "scaleX(0)" }}
         />
       </div>
-      <span
-        ref={counterRef}
-        className="type-mono absolute bottom-8 left-8 text-dust"
-        aria-hidden="true"
-      >
-        000
-      </span>
+
+      <div className="type-mono flex items-baseline gap-[14px]" style={{ color: COLORS.slate }}>
+        <span ref={numRef} style={{ color: COLORS.bone }}>
+          000
+        </span>
+        <span>{PRELOADER.status}</span>
+      </div>
     </div>
   );
 }

@@ -58,7 +58,7 @@ export const HERO = {
 export const INTRO = {
   index: "01 - What we do for you.",
   heading:
-    "Most agencies stop at the deliverable. We ship the product and the system that grows it.",
+    "Most agencies stop at the deliverable. We at quarks ship the product and the system that grows it.",
   body: "One team designs the interface, writes the code, tunes the search rankings, automates the back office and runs the channels. No handoffs between four vendors. No one to blame but us.",
   facts: [
     {
@@ -71,7 +71,7 @@ export const INTRO = {
     },
     {
       label: "ONE ACCOUNTABILITY",
-      line: "A founder is on every project. You talk to the people doing the work, not an account manager.",
+      line: "You talk to the people doing the work, not an account manager.",
     },
   ],
 } as const;
@@ -100,7 +100,7 @@ export interface CaseDef {
 export const WORK = {
   index: "02 - Selected work",
   heading: "Our Products.",
-  sub: "Drag or scroll sideways. Every card is one client, one scope, one live URL.",
+  sub: "Tailored to your needs.",
   dragLabel: "DRAG",
   scrollLabel: "SCROLL",
   visit: "Visit live ↗",
@@ -276,7 +276,7 @@ export const CONTACT = {
   copyright: "© 2026 Quarks. All matter reserved.",
   columns: [
     { label: "Studio", lines: [SITE.city, SITE.coordinates] },
-    { label: "Availability", lines: ["Taking two new builds for Q4 2026. Retainers open now."] },
+    { label: "Availability", lines: ["Taking eight new builds for Q4 2026. Retainers open now."] },
   ],
   follow: {
     label: "Follow",

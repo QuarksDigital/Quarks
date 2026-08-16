@@ -27,7 +27,9 @@ export function playHeroIntro(instant = false): void {
     return;
   }
 
-  gsap.set("[data-q='ht-line']", { yPercent: 118 });
+  // The title lines rest in place - no rise out of the mask. The entrance is
+  // the focus-pull alone (see interactions/reveal).
+  gsap.set("[data-q='ht-line']", { yPercent: 0 });
 
   /*
    * Same focus pull the rest of the document uses (see interactions/reveal).
@@ -47,20 +49,21 @@ export function playHeroIntro(instant = false): void {
        */
       onComplete: () => ScrollTrigger.refresh(),
     })
-    .to("[data-q='ht-line']", { yPercent: 0, duration: 1.35, ease: "expo.out", stagger: 0.09 })
     .from(
       "[data-q='hero-title']",
       { ...BLUR_IN, duration: 1.5, ease: "power2.out", clearProps: "filter" },
       0,
     )
+    // Every copy block resolves out of focus only - blur and fade, no vertical
+    // travel, so the whole opening reads as one focus-pull.
     .from(
       "[data-q='hero-eyebrow']",
-      { ...BLUR_IN, opacity: 0, y: 16, duration: 0.9, ease: "power3.out", clearProps: "filter" },
+      { ...BLUR_IN, opacity: 0, duration: 0.9, ease: "power3.out", clearProps: "filter" },
       0.1,
     )
     .from(
       "[data-q='hero-sub']",
-      { ...BLUR_IN, opacity: 0, y: 24, duration: 1, ease: "power3.out", clearProps: "filter" },
+      { ...BLUR_IN, opacity: 0, duration: 1, ease: "power3.out", clearProps: "filter" },
       0.5,
     )
     .from(
@@ -68,7 +71,6 @@ export function playHeroIntro(instant = false): void {
       {
         ...BLUR_IN,
         opacity: 0,
-        y: 22,
         duration: 0.9,
         ease: "power3.out",
         stagger: 0.08,
@@ -97,6 +99,46 @@ export function createHeroScene({ refs, reduced }: SceneBuildArgs<HeroRefs>): ()
   if (video) {
     const attach = () => {
       const duration = video.duration || 16;
+      // One frame at the file's 24fps. Seeks smaller than this land on the
+      // same decoded frame, so requesting them just thrashes the decoder for
+      // no visible change - we skip them.
+      const FRAME = 1 / 24;
+
+      let target = 0; // latest time scroll wants
+      let applied = -1; // time currently reflected on the element
+      let queued = false; // a seek is scheduled for the next frame
+      let seeking = false; // the element is mid-seek right now
+
+      // Coalesce every scroll tick that arrives within one animation frame
+      // into a single currentTime write. Writing currentTime repeatedly before
+      // a seek resolves cancels the in-flight decode and restarts it, which is
+      // the stutter felt while scrolling. Draining once per rAF - and only when
+      // the previous seek has finished - keeps the decoder working on one seek
+      // at a time.
+      const drain = () => {
+        queued = false;
+        if (video.readyState < 2 || seeking) return;
+        if (Math.abs(target - applied) < FRAME) return;
+        applied = target;
+        seeking = true;
+        try {
+          video.currentTime = target;
+        } catch {
+          /* seeking can throw mid-load - the next tick recovers */
+          seeking = false;
+        }
+      };
+
+      // Once a seek resolves, immediately fold in whatever scroll moved to in
+      // the meantime, so the frame never lags a fast flick.
+      video.addEventListener("seeked", () => {
+        seeking = false;
+        if (Math.abs(target - applied) >= FRAME && !queued) {
+          queued = true;
+          requestAnimationFrame(drain);
+        }
+      });
+
       triggers.push(
         ScrollTrigger.create({
           trigger: hero,
@@ -104,11 +146,10 @@ export function createHeroScene({ refs, reduced }: SceneBuildArgs<HeroRefs>): ()
           end: "bottom bottom",
           scrub: HERO_MOTION.videoScrub,
           onUpdate: (self) => {
-            if (video.readyState < 2) return;
-            try {
-              video.currentTime = self.progress * (duration - 0.05);
-            } catch {
-              /* seeking can throw mid-load - the next tick recovers */
+            target = self.progress * (duration - 0.05);
+            if (!queued) {
+              queued = true;
+              requestAnimationFrame(drain);
             }
           },
         }),

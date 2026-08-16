@@ -29,15 +29,17 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
     });
 
     /*
-     * Two channels, one gesture: the words ride up out of their masks while
-     * the heading as a whole resolves out of focus.
+     * The heading resolves purely out of focus - no vertical travel. The blur
+     * sits on the [data-split] element (not on .q-word) because .q-word-wrap
+     * clips its child, so a blur inside the mask would have its soft edge sliced
+     * off against the box and read as a smear. On the parent the whole resolved
+     * block is what comes into focus.
      *
-     * The blur sits on the [data-split] element rather than on .q-word because
-     * .q-word-wrap clips its child - a blur applied inside the mask would have
-     * its soft edge sliced off against the box and read as a smear. Applied to
-     * the parent, the clip happens first and the whole resolved block is what
-     * comes into focus.
+     * The words are held at their resting position (yPercent 0) rather than
+     * animated up out of the mask - the entrance is the blur alone.
      */
+    gsap.set(el.querySelectorAll(".q-word"), { yPercent: 0 });
+
     tl.fromTo(
       el,
       { filter: `blur(${REVEAL.blur}px)` },
@@ -49,35 +51,25 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
         clearProps: "filter",
       },
       0,
-    ).fromTo(
-      el.querySelectorAll(".q-word"),
-      { yPercent: REVEAL.yPercent },
-      {
-        yPercent: 0,
-        duration: REVEAL.duration,
-        ease: "expo.out",
-        stagger: REVEAL.stagger,
-        immediateRender: false,
-      },
-      0,
     );
 
     if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
   });
 
+  // Cards rise and fade in. The blur-in is reserved for the [data-split]
+  // headings above, so these lift cleanly without a second focus-pull - one
+  // blur per screen keeps the entrance calm rather than busy.
   (["[data-fact]", "[data-step]", "[data-scard]"] as const).forEach((sel) => {
     scope.querySelectorAll<HTMLElement>(sel).forEach((el) => {
       const tween = gsap.fromTo(
         el,
-        { opacity: 0, y: 42, filter: `blur(${REVEAL.blur}px)` },
+        { opacity: 0, y: 42 },
         {
           opacity: 1,
           y: 0,
-          filter: "blur(0px)",
           duration: 1,
           ease: "power3.out",
           immediateRender: false,
-          clearProps: "filter",
           scrollTrigger: { trigger: el, start: "top 92%", once: true },
         },
       );

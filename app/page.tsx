@@ -4,6 +4,7 @@ import Work from "@/sections/Work";
 import About from "@/sections/About";
 import Contact from "@/sections/Contact";
 import ScrollGate from "@/components/services/ScrollGate";
+import ServicesFooter from "@/components/services/ServicesFooter";
 import { COLORS } from "@/constants/tokens";
 
 export default function Home() {
@@ -30,6 +31,9 @@ export default function Home() {
       <About />
       <Contact />
       <ScrollGate />
+      {/* Closes the services stage the gate reveals - a slim footer bar that
+          flows in once the gate's pinned scroll completes. */}
+      <ServicesFooter />
     </main>
   );
 }

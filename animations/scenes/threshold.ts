@@ -55,17 +55,29 @@ export function createThresholdScene({ refs, reduced }: SceneBuildArgs<Threshold
       scrub: SCRUB,
       onUpdate: (self) => {
         const p = self.progress;
-        if (percent) percent.textContent = String(Math.round(p * 100)).padStart(3, "0");
-        if (label) label.textContent = p < 0.5 ? GATE.prompt : p < 0.99 ? GATE.charging : GATE.release;
+        /*
+         * The bar fills across the first 80% of the runway and then holds full
+         * for the last 20%. That trailing hold is deliberate: the next section
+         * (the gate) begins lifting its plate as the reader crosses out of this
+         * pin, and with smooth-scroll the scrubbed fill visually trails the
+         * scroll position. Finishing early guarantees the loader reads as 100%
+         * complete before the black plate starts to raise, instead of the plate
+         * sliding up over a bar that still looks half-full.
+         */
+        const charge = Math.min(p / 0.8, 1);
+        if (percent) percent.textContent = String(Math.round(charge * 100)).padStart(3, "0");
+        if (label)
+          label.textContent =
+            charge < 0.5 ? GATE.prompt : charge < 1 ? GATE.charging : GATE.release;
       },
     },
   });
 
-  tl.to(panel, { autoAlpha: 1, duration: 0.12, ease: "none" }, 0).to(
-    fill,
-    { scaleX: 1, duration: 1, ease: "none" },
-    0,
-  );
+  // Map the fill tween onto the first 80% of the timeline; the remaining 20%
+  // is an intentional hold at full (see onUpdate).
+  tl.to(panel, { autoAlpha: 1, duration: 0.12, ease: "none" }, 0)
+    .to(fill, { scaleX: 1, duration: 0.8, ease: "none" }, 0)
+    .to({}, { duration: 0.2 }, 0.8);
 
   return () => {
     tl.scrollTrigger?.kill();

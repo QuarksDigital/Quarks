@@ -286,7 +286,7 @@ export const SERVICES_COPY = {
   index: "05 - Services",
   heading: "Our Expertise.",
   sub: "Pick one or take the full stack. Every engagement has a named lead, a fixed scope and a date.",
-  hint: "DRAG TO ORBIT · CLICK A CARD",
+  hint: "CLICK A CARD",
   close: "RELEASE",
   backToHome: "BACK TO THE VOID",
   stepsIndex: "How an engagement runs",
@@ -337,8 +337,8 @@ export const ATOM = {
     { a: 3.9, e: 0.66, tiltX: 0.42, tiltZ: 1.32, electrons: 2, speed: 0.52 },
   ],
   trailLength: 18,
-  dragDamping: 0.92,
+  dragDamping: 0.99,
   autoSpin: 0.085,
   /** Global dimmer applied to every emissive/additive element in the module. */
-  opacity: 0.42,
+  opacity: 0.1,
 } as const;

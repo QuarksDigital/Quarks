@@ -126,7 +126,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="antialiased">
-      <body>
+      {/*
+       * suppressHydrationWarning: browser extensions (ColorZilla, Grammarly,
+       * password managers) inject attributes like cz-shortcut-listen onto
+       * <body> before React hydrates, which React would otherwise flag as a
+       * mismatch. This suppresses the warning for body's own attributes only -
+       * it does not affect children.
+       */}
+      <body suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

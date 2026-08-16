@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ServicesExperience from "@/components/services/ServicesExperience";
+import ServicesFooter from "@/components/services/ServicesFooter";
 import { PILLARS, SERVICES_COPY, STEPS } from "@/constants/services";
 import { SITE } from "@/constants/content";
 
@@ -71,6 +72,7 @@ export default function ServicesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, howTo]) }}
       />
       <ServicesExperience standalone />
+      <ServicesFooter />
     </main>
   );
 }

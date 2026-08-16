@@ -426,9 +426,39 @@ export default function ServiceCards({ pillar, selected, onSelect }: Props) {
       if (isActive) {
         // Pause the bob so the elastic settle isn't fighting a sine wave.
         if (float) gsap.to(float, { y: 0, rotate: 0, duration: 0.4, ease: "power2.out" });
+        /*
+         * Centre the opened card in the usable band, not on the wrapper centre.
+         *
+         * The slot origin sits at the wrapper's vertical centre (top:50% + a
+         * -card-h/2 margin), so a translate of y:0 parks the card's own centre
+         * on the wrapper centre. On phones the readable band is the strip
+         * between the heading and the footer rail, which sits *below* that
+         * centre - so y:0 lands the card high, half under the heading.
+         *
+         * Measured live here (rather than read from a ref that layout() may not
+         * have refreshed) from the same CSS vars layout uses: the band centre's
+         * offset from the wrapper centre is exactly the y translate that seats
+         * the card in the middle of what the viewer can actually see. Desktop
+         * (non-deck) keeps y:0 - there the cloud fills the section.
+         */
+        let activeY = 0;
+        if (deckRef.current) {
+          const wrapEl = wrapRef.current;
+          if (wrapEl) {
+            const cs = getComputedStyle(wrapEl);
+            const readPx = (name: string, fallback: number) => {
+              const v = parseFloat(cs.getPropertyValue(name));
+              return Number.isFinite(v) ? v : fallback;
+            };
+            const hh = wrapEl.clientHeight;
+            const bandTop = readPx("--svc-cloud-top", 236);
+            const bandBottom = hh - readPx("--svc-cloud-bottom", 84);
+            activeY = (bandTop + bandBottom) / 2 - hh / 2;
+          }
+        }
         gsap.to(el, {
           x: 0,
-          y: 0,
+          y: activeY,
           z: 340,
           rotationX: 0,
           rotationY: 0,

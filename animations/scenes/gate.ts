@@ -98,6 +98,21 @@ export function createGateScene({ refs, reduced }: SceneBuildArgs<GateRefs>): ((
   };
   measure();
 
+  /*
+   * The pin must engage at the section top and hold across the whole section,
+   * or the stage scrolls out of view before the reveal ever runs. So the
+   * trigger spans the full section as before - and the *mark's motion* is what
+   * gets delayed, not the pin.
+   *
+   * The gate section is pulled up 100vh under the footer's threshold pin (see
+   * ScrollGate's marginTop), and that section is 240vh tall. The first 100vh of
+   * its scroll overlaps the loader filling; we want the mark to sit still in
+   * the nav corner through that window and only begin travelling once the
+   * loader has completed. 100vh of 240vh is ~0.417 of progress, so the mark
+   * holds until ~0.42 and the travel + scale-through happens in the remainder.
+   */
+  const HOLD = 0.42;
+
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: section,
@@ -112,10 +127,10 @@ export function createGateScene({ refs, reduced }: SceneBuildArgs<GateRefs>): ((
       onUpdate: (self) => {
         const p = self.progress;
         // Once the mark is travelling, the chrome should already read as /services.
-        if (p > 0.25) routeStore.set("/services", "dark");
+        if (p > HOLD + 0.05) routeStore.set("/services", "dark");
 
         // Keep the address bar honest without unmounting anything.
-        const path = p > 0.85 ? "/services" : "/";
+        const path = p > 0.9 ? "/services" : "/";
         if (window.location.pathname !== path) {
           window.history.replaceState(null, "", path);
         }
@@ -125,14 +140,18 @@ export function createGateScene({ refs, reduced }: SceneBuildArgs<GateRefs>): ((
   register(tl.scrollTrigger as ScrollTrigger);
 
   tl
+    // Empty hold: the mark stays put in the nav corner (measure() already set
+    // it there) while the loader finishes across the first HOLD of scroll.
+    .to({}, { duration: HOLD }, 0)
     // travel to centre
-    .to(mark, { x: 0, y: 0, scale: 1, duration: 0.3, ease: EASE.orbital }, 0)
+    .to(mark, { x: 0, y: 0, scale: 1, duration: 0.18, ease: EASE.orbital }, HOLD)
     // scale through - power2.in so it accelerates as it swallows the frame
-    .to(mark, { scale: MAX_SCALE, duration: 0.62, ease: "power2.in" }, 0.3)
+    .to(mark, { scale: MAX_SCALE, duration: 0.34, ease: "power2.in" }, HOLD + 0.18)
     // dissolve the remaining void
-    .to(plate, { autoAlpha: 0, duration: 0.08, ease: "none" }, 0.92);
+    .to(plate, { autoAlpha: 0, duration: 0.06, ease: "none" }, 0.94);
 
-  // The stage behind should already be alive before the mark opens up.
+  // The stage behind comes alive only after the hold, so it doesn't brighten
+  // while the loader is still charging.
   const behind = gsap.fromTo(
     services,
     { scale: 1.12, autoAlpha: 0.35 },
@@ -140,7 +159,12 @@ export function createGateScene({ refs, reduced }: SceneBuildArgs<GateRefs>): ((
       scale: 1,
       autoAlpha: 1,
       ease: "none",
-      scrollTrigger: { trigger: section, start: "top top", end: "bottom bottom", scrub: SCRUB },
+      scrollTrigger: {
+        trigger: section,
+        start: `top+=${HOLD * 100}% top`,
+        end: "bottom bottom",
+        scrub: SCRUB,
+      },
     },
   );
 

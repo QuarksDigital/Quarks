@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useSceneTrigger } from "@/hooks/useSceneTrigger";
 import { createHeroScene, type HeroRefs } from "@/animations/scenes/hero";
 import { scrollToRoute } from "@/lib/scrollTo";
@@ -10,6 +10,29 @@ import { COLORS, MEDIA } from "@/constants/tokens";
 export default function Hero() {
   const hero = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+
+  /*
+   * Pick the video resolution on the client, before the scene primes the
+   * decoder. The frame is scroll-scrubbed, so every scroll tick pays a full
+   * frame-decode - a 1080p all-intra frame is ~2x the decode work of 720p.
+   * Desktops with room to spare get 1080; anything smaller, or a device that
+   * reports a slow/save-data connection, gets the lighter 720 file. The src is
+   * assigned here (not as a JSX attribute) so server and client markup match
+   * and the choice can read window/navigator.
+   */
+  useLayoutEffect(() => {
+    const el = video.current;
+    if (!el || el.src) return;
+
+    type NetInfo = { saveData?: boolean; effectiveType?: string };
+    const net = (navigator as Navigator & { connection?: NetInfo }).connection;
+    const thrifty =
+      !!net && (net.saveData === true || /(^|-)2g$|(^|-)3g$/.test(net.effectiveType ?? ""));
+
+    const wantHd = window.innerWidth >= 1024 && !thrifty;
+    el.src = wantHd ? MEDIA.heroVideo1080 : MEDIA.heroVideo720;
+    el.load();
+  }, []);
 
   useSceneTrigger<HeroRefs>((args) => createHeroScene(args), {
     get hero() {
@@ -26,13 +49,19 @@ export default function Hero() {
         <video
           ref={video}
           data-q="hero-video"
-          src={MEDIA.heroVideo1080}
           poster={MEDIA.heroPoster}
           muted
           playsInline
           preload="auto"
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            // Promote the frame to its own compositor layer so scroll-scrub
+            // repaints don't force the rest of the hero to re-composite.
+            transform: "translateZ(0)",
+            willChange: "transform",
+            backfaceVisibility: "hidden",
+          }}
         />
 
         <div

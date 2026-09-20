@@ -9,7 +9,8 @@ import Cursor from "@/components/persistent/Cursor";
 import { SITE, FOUNDERS } from "@/constants/content";
 import { COLORS } from "@/constants/tokens";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.quarksdigital.in";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.quarksdigital.in";
 const TITLE = `${SITE.name} : ${SITE.tagline}`;
 
 /**
@@ -26,19 +27,21 @@ export const metadata: Metadata = {
   category: "Marketing",
   keywords: [
     "digital marketing agency",
-    "creative agency",
+    "digital marketing agency in India",
+    "digital marketing agency in Bhubaneswar",
+    "SEO agency",
+    "search engine optimization services",
+    "social media marketing agency",
+    "social media management",
+    "web development agency",
+    "website design and development",
+    "app development company",
     "brand strategy",
-    "web design",
-    "web development",
-    "app development",
-    "3D web experiences",
-    "SEO",
-    "ASO",
-    "business automation",
-    "performance marketing",
-    "content marketing",
-    "social media",
-    "Quarks",
+    "creative agency",
+    "business process automation",
+    "workflow automation",
+    "3D web development",
+    "Quarks Digital",
   ],
   authors: [{ name: SITE.name }],
   creator: SITE.name,
@@ -62,7 +65,14 @@ export const metadata: Metadata = {
     title: TITLE,
     description: SITE.description,
     locale: "en_US",
-    images: [{ url: "/hero/genesis-poster.jpg", alt: TITLE, width: 1920, height: 1080 }],
+    images: [
+      {
+        url: "/hero/genesis-poster.jpg",
+        alt: TITLE,
+        width: 1920,
+        height: 1080,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -70,8 +80,12 @@ export const metadata: Metadata = {
     description: SITE.description,
     images: ["/hero/genesis-poster.jpg"],
   },
-icons: { icon: "/icon_black_bg.png", apple: "/icon_black_bg.png", shortcut: "/icon_black_bg.png" },
-formatDetection: { email: false, telephone: false, address: false },
+  icons: {
+    icon: "/icon_black_bg.png",
+    apple: "/icon_black_bg.png",
+    shortcut: "/icon_black_bg.png",
+  },
+  formatDetection: { email: false, telephone: false, address: false },
 };
 
 export const viewport: Viewport = {

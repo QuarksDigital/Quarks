@@ -3,10 +3,10 @@ import { MEDIA } from "@/constants/tokens";
 
 export const SITE = {
   name: "QUARKS",
-  tagline: "From Invisible to Inevitable.",
+  tagline: "Digital Marketing, SEO & Web Development",
   subline: "A DIGITAL MARKETING AGENCY",
   description:
-    "Quarks is a digital product and growth studio. We design and build websites, apps and 3D experiences, then run the SEO, ASO, automation and social that make them impossible to ignore.",
+  "Quarks Digital helps businesses grow through SEO, social media marketing, web and app development, brand strategy, and business automation.",
   emailNew: "quarksdigitalmarketing@gmail.com",
   emailElse: "quarks.questions@gmail.com",
   city: "Bhubaneswar, Odisha",

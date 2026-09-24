@@ -101,8 +101,13 @@ export function createHeroScene({ refs, reduced }: SceneBuildArgs<HeroRefs>): ()
       const duration = video.duration || 16;
       // One frame at the file's 24fps. Seeks smaller than this land on the
       // same decoded frame, so requesting them just thrashes the decoder for
-      // no visible change - we skip them.
+      // no visible change. We skip anything under ~1.5 frames: on a slow
+      // decoder (integrated GPU, phone) that roughly halves the seeks issued
+      // during a scroll, which is the difference between a smooth scrub and a
+      // backlog the decoder never catches up to. The cost is that a resting
+      // frame can sit up to one frame off, which is invisible behind the veil.
       const FRAME = 1 / 24;
+      const MIN_SEEK = FRAME * 1.5;
 
       let target = 0; // latest time scroll wants
       let applied = -1; // time currently reflected on the element
@@ -118,7 +123,7 @@ export function createHeroScene({ refs, reduced }: SceneBuildArgs<HeroRefs>): ()
       const drain = () => {
         queued = false;
         if (video.readyState < 2 || seeking) return;
-        if (Math.abs(target - applied) < FRAME) return;
+        if (Math.abs(target - applied) < MIN_SEEK) return;
         applied = target;
         seeking = true;
         try {
@@ -133,7 +138,7 @@ export function createHeroScene({ refs, reduced }: SceneBuildArgs<HeroRefs>): ()
       // the meantime, so the frame never lags a fast flick.
       video.addEventListener("seeked", () => {
         seeking = false;
-        if (Math.abs(target - applied) >= FRAME && !queued) {
+        if (Math.abs(target - applied) >= MIN_SEEK && !queued) {
           queued = true;
           requestAnimationFrame(drain);
         }

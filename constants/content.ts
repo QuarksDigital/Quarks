@@ -11,7 +11,7 @@ export const SITE = {
   emailElse: "quarks.questions@gmail.com",
   city: "Bhubaneswar, Odisha",
   coordinates: "20.296059° N · 85.824539° E",
-  readout: "quarks.studio",
+  readout: "quarks",
   instagram: "https://www.instagram.com/quarksdigital",
   linkedin: "https://www.linkedin.com/company/quarksdigital/",
 } as const;
@@ -89,6 +89,8 @@ export interface CaseDef {
    */
   url?: string;
   deliver: string;
+  /** One short line shown on the card face, before it is opened. */
+  blurb: string;
   /** One paragraph shown when the card is opened. */
   summary: string;
   /** Everything the studio actually did, as chips. */
@@ -128,6 +130,7 @@ export const CASES: readonly CaseDef[] = [
     year: "2026",
     image: MEDIA.cases.mosaram,
     deliver: "Brand film · Website · Launch campaign",
+    blurb: "A cinematic launch for an automobile brand — film, configurator and campaign shipped as one.",
     summary:
       "A launch built backwards from the showroom floor. We shot the film, built the configurator around it, and ran the campaign that put both in front of buyers in the first week.",
     scope: ["Brand film", "Web build", "Configurator", "Launch campaign"],
@@ -144,6 +147,7 @@ export const CASES: readonly CaseDef[] = [
     year: "2025",
     image: MEDIA.cases.kute,
     deliver: "Product design · App build · ASO",
+    blurb: "A dating app engineered to turn matches into real conversations.",
     summary:
       "A dating product designed around one question: does a match turn into a conversation? Every screen, and the store listing that feeds it, is tuned to that single number.",
     scope: ["Product design", "React Native", "ASO", "Store creative"],
@@ -156,29 +160,31 @@ export const CASES: readonly CaseDef[] = [
   {
     index: "CASE 003",
     name: "KCPL",
-    sector: "Streetwear",
+    sector: "Laptop retail & distribution",
     year: "2026",
     image: MEDIA.cases.kcpl,
-    deliver: "E-commerce · Drop mechanics · Social",
+    deliver: "E-commerce · Catalogue · Storefront",
+    blurb: "An online store for a laptop seller — a searchable catalogue and a checkout that converts.",
     summary:
-      "Drop mechanics that treat scarcity as a feature rather than an accident: a queue that holds, a checkout that survives the spike, and a feed that keeps the next drop warm.",
-    scope: ["E-commerce", "Drop mechanics", "Social", "Retention"],
+      "A storefront built around how people actually buy a laptop: filter by spec, compare side by side, and check out fast — with stock and pricing kept in sync across the whole catalogue.",
+    scope: ["E-commerce", "Catalogue", "Search & filter", "Retention"],
     results: [
-      { value: "3x", label: "Drop sell-through" },
-      { value: "<1s", label: "Checkout load" },
-      { value: "+45%", label: "Returning buyers" },
+      { value: "+50%", label: "Organic visits" },
+      { value: "<1s", label: "Catalogue load" },
+      { value: "+35%", label: "Returning buyers" },
     ],
   },
   {
     index: "CASE 004",
     name: "SHREE GAUTAM STEEL",
-    sector: "Steel utensils manafacturer",
+    sector: "Steel utensils manufacturer",
     year: "2026",
     image: MEDIA.cases.shreegautamsteel,
-    deliver: "E-commerce · Drop mechanics · Social",
+    deliver: "E-commerce · Catalogue · Storefront",
+    blurb: "An online storefront for a steel-utensils manufacturer.",
     summary:
-      "Drop mechanics that treat scarcity as a feature rather than an accident: a queue that holds, a checkout that survives the spike, and a feed that keeps the next drop warm.",
-    scope: ["E-commerce", "Drop mechanics", "Social", "Retention"],
+      "A catalogue-first storefront for a steel-utensils manufacturer: a clean product grid, wholesale and retail pricing, and a checkout that holds up as the range grows.",
+    scope: ["E-commerce", "Catalogue", "Storefront", "Retention"],
     results: [
       { value: "3x", label: "Drop sell-through" },
       { value: "<1s", label: "Checkout load" },
@@ -188,20 +194,20 @@ export const CASES: readonly CaseDef[] = [
 ] as const;
 
 export interface FounderDef {
-  index: string;
+  id: string;
   name: string;
   role: string;
-  photo: string;
-  position: string;
-  bio: string;
-  detail: string;
-  quote: string;
+  /** Lines shown under the name; the final line is a signed quote. */
+  details: readonly string[];
+  photoFull: string;
+  /** object-position for the portrait crop; defaults to a centred head. */
+  objectPos?: string;
 }
 
 export const ABOUT = {
   index: "03 - The studio",
   heading: "Our Team.",
-  body: "Quarks started in Bhubaneswar in 2026 because good products kept losing to worse products with better distribution. We fixed that by refusing to separate the two: the people who design your interface also own how it gets found.",
+  body: "Quarks started because good products kept losing to worse products with better distribution. We fixed that by refusing to separate the two: the people who design your interface also own how it gets found.",
   stats: [
     { value: 10, suffix: "+", label: "Products shipped" },
     { value: 10000, suffix: "+", label: "Lives impacted" },
@@ -211,58 +217,64 @@ export const ABOUT = {
 
 export const FOUNDERS: readonly FounderDef[] = [
   {
-    index: "FOUNDER 01",
+    id: "saksham",
     name: "SAKSHAM",
-    role: "Co-founder · CTO",
-    photo: MEDIA.founders.saksham,
-    position: "30% 30%",
-    bio: "Writes the code that ships. Saksham turns a design file into a product that loads in under a second and holds up under real traffic.",
-    detail:
-      "Next.js, React Native and WebGL are his daily tools; performance budgets and Core Web Vitals are his obsession.",
-    quote: "“If it isn't fast, it isn't finished.”",
+    role: "CO-FOUNDER · CHIEF TECHNOLOGY OFFICER",
+    details: [
+      "Development & Implementation.",
+      "Obsessed with the physics of attention.",
+      '"Believe in yourself and the world shall too." ~Saksham Sinha',
+    ],
+    photoFull: MEDIA.founders.saksham,
+    objectPos: "18% 30%",
   },
   {
-    index: "FOUNDER 02",
+    id: "founder-2",
     name: "VINAYAK",
-    role: "Co-founder · Growth",
-    photo: MEDIA.founders.vinayak,
-    position: "30% 30%",
-    bio: "Market research and growth strategy. Vinayak decides where the money goes and proves what it brought back.",
-    detail:
-      "He builds the SEO, ASO and paid roadmaps, then reports them as pipeline instead of impressions.",
-    quote: "“Numbers only matter when they tell a story.”",
+    role: "CO-FOUNDER · GROWTH EXPERT",
+    details: [
+      "Market research and growth strategy.",
+      "Love for data-driven marketing and analytics.",
+      '"The beauty of numbers lie in their ability to tell stories." ~Vinayak Mittal',
+    ],
+    photoFull: MEDIA.founders.vinayak,
+    objectPos: "8% 30%",
   },
   {
-    index: "FOUNDER 03",
+    id: "founder-3",
     name: "TRISHA",
-    role: "Co-founder · Creative",
-    photo: MEDIA.founders.trisha,
-    position: "30% 28%",
-    bio: "Creative direction and brand strategy. Trisha finds the sentence a company can own, then makes everything look like it.",
-    detail:
-      "Campaign concepts, art direction and the content engine that keeps the channels fed after launch.",
-    quote: "“A brand is a promise people can repeat.”",
+    role: "CO-FOUNDER · CREATIVE HEAD",
+    details: [
+      "Creative direction and brand strategy.",
+      "Love for storytelling and visual communication.",
+      '"It is not the eye that sees the beauty but the heart that feels it." ~Trisha Jain',
+    ],
+    photoFull: MEDIA.founders.trisha,
+    objectPos: "22% 28%",
   },
   {
-    index: "FOUNDER 04",
+    id: "founder-4",
     name: "SHUVAM",
-    role: "Co-founder · Product",
-    photo: MEDIA.founders.shuvam,
-    position: "12% 34%",
-    bio: "Product design and feature scoping. Shuvam keeps every build pointed at a user who actually exists.",
-    detail:
-      "Research, flows and the interface system - plus the discipline to cut features that don't earn their place.",
-    quote: "“Scope is a design decision.”",
+    role: "CO-FOUNDER · PRODUCT HEAD",
+    details: [
+      "Product design and feature development.",
+      "Love for creating user-centric products and experiences.",
+      '"The best way to predict the future is to create it." ~Shuvam Kumar Sahu',
+    ],
+    photoFull: MEDIA.founders.shuvam,
+    objectPos: "10% 40%",
   },
   {
-    index: "FOUNDER 05",
+    id: "reyansh",
     name: "REYANSH",
-    role: "Co-founder",
-    photo: MEDIA.founders.reyansh,
-    position: "50% 30%",
-    bio: "Reyansh rounds out the founding team, working across client delivery and studio operations.",
-    detail: "",
-    quote: "",
+    role: "CO-FOUNDER · CHIEF FINANCIAL OFFICER",
+    details: [
+      "Financial planning, budgeting, and business strategy.",
+      "Passionate about turning numbers into sustainable growth.",
+      '"Great business is built not just by earning more, but by managing wisely." ~Reyansh Singh',
+    ],
+    photoFull: MEDIA.founders.reyansh,
+    objectPos: "25% 28%",
   },
 ] as const;
 

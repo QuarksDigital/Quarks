@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { COLORS } from "@/constants/tokens";
 import { CURSOR } from "@/constants/motion";
-import { isTouchDevice, prefersReducedMotion } from "@/utils/dom";
+import { hasFinePointer, prefersReducedMotion } from "@/utils/dom";
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export default function Cursor() {
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
-    if (isTouchDevice() || prefersReducedMotion()) return;
+    if (!hasFinePointer() || prefersReducedMotion()) return;
 
     document.body.dataset.customCursor = "true";
     gsap.set([dot, ring], { opacity: 1 });

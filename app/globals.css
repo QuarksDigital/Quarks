@@ -530,7 +530,11 @@ body[data-custom-cursor="true"] * {
       address bar slides, so the pinned frame stays still while scrolling.
     */
     --hero-vh: 100svh;
-    --work-panel-w: min(78vw, 520px);
+    /* The front card is scaled up ~1.2-1.3x by the helix perspective, so its
+       rendered width runs well over its CSS width. Sizing the panel below the
+       viewport by that margin is what stops the centred card being clipped at
+       the screen edges on phones and small tablets. */
+    --work-panel-w: min(66vw, 460px);
     --work-panel-maxh: 38vh;
     --work-cap-bottom: 14vh;
     /* Clear the docked nav pill. */
@@ -571,7 +575,7 @@ body[data-custom-cursor="true"] * {
 @media (max-width: 560px) {
   :root {
     --hero-runway: 220vh;
-    --work-panel-w: min(86vw, 420px);
+    --work-panel-w: min(74vw, 380px);
     --work-panel-maxh: 34vh;
     --work-cap-bottom: 15vh;
     --founder-h: min(74vh, 560px);

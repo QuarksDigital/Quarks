@@ -14,22 +14,36 @@ export default function Hero() {
   /*
    * Pick the video resolution on the client, before the scene primes the
    * decoder. The frame is scroll-scrubbed, so every scroll tick pays a full
-   * frame-decode - a 1080p all-intra frame is ~2x the decode work of 720p.
-   * Desktops with room to spare get 1080; anything smaller, or a device that
-   * reports a slow/save-data connection, gets the lighter 720 file. The src is
-   * assigned here (not as a JSX attribute) so server and client markup match
-   * and the choice can read window/navigator.
+   * frame-decode - a 1080p all-intra frame is ~2x the decode work of 720p, and
+   * on an integrated GPU that difference is the stutter.
+   *
+   * The bar for 1080 is deliberately high: only wide viewports backed by a
+   * capable machine get it. Two things make this conservative on purpose - a
+   * 14" laptop at OS scaling reports ~1280 CSS px (so it now falls to 720,
+   * which is what fixes the scrub lag there), and a thrifty or low-memory /
+   * low-core device is never handed the heavier file. Everything the veil
+   * covers is background, so 720 upscaled is an invisible trade for a smooth
+   * scrub. The src is assigned here (not as a JSX attribute) so server and
+   * client markup match and the choice can read window/navigator.
    */
   useLayoutEffect(() => {
     const el = video.current;
     if (!el || el.src) return;
 
     type NetInfo = { saveData?: boolean; effectiveType?: string };
-    const net = (navigator as Navigator & { connection?: NetInfo }).connection;
+    const nav = navigator as Navigator & {
+      connection?: NetInfo;
+      deviceMemory?: number;
+    };
+    const net = nav.connection;
     const thrifty =
       !!net && (net.saveData === true || /(^|-)2g$|(^|-)3g$/.test(net.effectiveType ?? ""));
 
-    const wantHd = window.innerWidth >= 1024 && !thrifty;
+    const cores = nav.hardwareConcurrency ?? 0;
+    const mem = nav.deviceMemory ?? 0;
+    const capable = (cores === 0 || cores >= 8) && (mem === 0 || mem >= 8);
+
+    const wantHd = window.innerWidth >= 1440 && !thrifty && capable;
     el.src = wantHd ? MEDIA.heroVideo1080 : MEDIA.heroVideo720;
     el.load();
   }, []);

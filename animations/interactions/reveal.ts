@@ -24,10 +24,6 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
     // The hero runs its own intro timeline; don't double-animate it.
     if (el.closest("[data-q='hero']")) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: el, start: REVEAL.start, once: true },
-    });
-
     /*
      * The heading resolves purely out of focus - no vertical travel. The blur
      * sits on the [data-split] element (not on .q-word) because .q-word-wrap
@@ -40,20 +36,31 @@ export function installReveals(scope: ParentNode = document, reduced = false): (
      */
     gsap.set(el.querySelectorAll(".q-word"), { yPercent: 0 });
 
-    tl.fromTo(
+    /*
+     * The block starts fully blurred (immediateRender pins the blur before it
+     * ever enters, so it is never shown sharp first) and comes into focus as it
+     * scrolls up through the lower half of the viewport. Scrubbing the focus
+     * pull to scroll position - rather than firing a fixed-duration tween once
+     * the block appears - is what makes the blur resolve *as the scroll
+     * proceeds*, which is the intended reading.
+     */
+    const tween = gsap.fromTo(
       el,
       { filter: `blur(${REVEAL.blur}px)` },
       {
         filter: "blur(0px)",
-        duration: REVEAL.blurDuration,
-        ease: "power2.out",
-        immediateRender: false,
-        clearProps: "filter",
+        ease: "none",
+        immediateRender: true,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 92%",
+          end: "top 45%",
+          scrub: true,
+        },
       },
-      0,
     );
 
-    if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
+    if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
   });
 
   // Cards rise and fade in. The blur-in is reserved for the [data-split]

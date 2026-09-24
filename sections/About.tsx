@@ -157,16 +157,16 @@ export default function About() {
             color: COLORS.bone,
           }}
         >
-          {FOUNDERS.map((f) => (
-            <div key={f.name} data-slide className="absolute inset-0 overflow-hidden">
+          {FOUNDERS.map((f, i) => (
+            <div key={f.id} data-slide className="absolute inset-0 overflow-hidden">
               <div className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={f.photo}
+                  src={f.photoFull}
                   alt={f.name}
                   draggable={false}
                   className="h-full w-full object-cover"
-                  style={{ objectPosition: f.position }}
+                  style={{ objectPosition: f.objectPos ?? "50% 30%" }}
                 />
                 <div aria-hidden="true" className="dot-film absolute inset-0" />
                 <div aria-hidden="true" className="dot-film-fine absolute inset-0" />
@@ -190,7 +190,7 @@ export default function About() {
                     className="type-mono-tight"
                     style={{ color: COLORS.accentDeep, letterSpacing: "0.22em" }}
                   >
-                    {f.index}
+                    {`FOUNDER ${String(i + 1).padStart(2, "0")}`}
                   </div>
                   <h3
                     className="mt-3.5 font-semibold"
@@ -208,43 +208,28 @@ export default function About() {
                   >
                     {f.role}
                   </div>
-                  <p
-                    className="mt-[26px] font-light"
-                    style={{
-                      maxWidth: "38ch",
-                      fontSize: 15,
-                      lineHeight: 1.65,
-                      color: "rgba(255,255,255,.62)",
-                    }}
-                  >
-                    {f.bio}
-                  </p>
-                  {f.detail && (
-                    <p
-                      className="mt-3 font-light"
-                      style={{
-                        maxWidth: "38ch",
-                        fontSize: 15,
-                        lineHeight: 1.65,
-                        color: "rgba(255,255,255,.62)",
-                      }}
-                    >
-                      {f.detail}
-                    </p>
-                  )}
-                  {f.quote && (
-                    <p
-                      className="mt-3 font-light italic"
-                      style={{
-                        maxWidth: "38ch",
-                        fontSize: 14,
-                        lineHeight: 1.65,
-                        color: "rgba(159,241,255,.72)",
-                      }}
-                    >
-                      {f.quote}
-                    </p>
-                  )}
+                  <div className="mt-[26px] flex flex-col gap-2.5">
+                    {f.details.map((line, di) => {
+                      // The last line is a signed quote (starts with a quote
+                      // mark) - set it apart in italic accent from the plain
+                      // descriptive lines above it.
+                      const isQuote = /^["'“”]/.test(line.trim());
+                      return (
+                        <p
+                          key={di}
+                          className={`m-0 font-light${isQuote ? " italic" : ""}`}
+                          style={{
+                            maxWidth: "40ch",
+                            fontSize: isQuote ? 14 : 15,
+                            lineHeight: 1.65,
+                            color: isQuote ? "rgba(159,241,255,.72)" : "rgba(255,255,255,.62)",
+                          }}
+                        >
+                          {line}
+                        </p>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

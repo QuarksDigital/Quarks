@@ -276,7 +276,11 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
       overwrite: true,
     });
 
-    gsap.to(card.querySelectorAll("[data-panel-detail]"), {
+    // The detail is display:none while collapsed so it reserves no space on the
+    // card face; bring it into flow before fading it in.
+    const detail = card.querySelectorAll("[data-panel-detail]");
+    gsap.set(detail, { display: "flex" });
+    gsap.to(detail, {
       autoAlpha: 1,
       y: 0,
       duration: 0.7,
@@ -297,11 +301,14 @@ export function createWorkScene({ refs, reduced }: SceneBuildArgs<WorkRefs>): ()
     st.open = -1;
     delete stage.dataset.open;
     gsap.killTweensOf(card);
-    gsap.to(card.querySelectorAll("[data-panel-detail]"), {
+    const detail = card.querySelectorAll("[data-panel-detail]");
+    gsap.to(detail, {
       autoAlpha: 0,
       y: 14,
       duration: 0.25,
       ease: "power2.in",
+      // Return it to display:none so the collapsed face keeps its clean layout.
+      onComplete: () => gsap.set(detail, { display: "none" }),
     });
 
     gsap.to(scrim, { autoAlpha: 0, duration: 0.45, ease: "power2.in" });

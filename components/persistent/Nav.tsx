@@ -368,7 +368,7 @@ export default function Nav() {
           }}
         >
           <span data-q="cta-long">{NAV.cta}</span>
-          <span data-q="cta-short">{NAV.ctaShort}</span>
+          <span data-q="cta-short">{NAV.cta}</span>
         </a>
       </div>
     </header>

@@ -162,11 +162,20 @@ export default function Work() {
                 }}
               />
 
-              <div className="absolute inset-0 flex flex-col justify-end gap-3 p-[clamp(18px,2.2vw,32px)]">
+              <div className="absolute inset-0 flex flex-col justify-end gap-2.5 p-[clamp(18px,2.2vw,32px)]">
                 <div className="flex items-end justify-between gap-4">
                   <h3
                     className="m-0 font-semibold"
-                    style={{ fontSize: "clamp(22px,2.6vw,42px)", letterSpacing: "-0.038em" }}
+                    style={{
+                      // Lower floor (18px) than the desktop track, so a
+                      // multi-word title like "SHREE GAUTAM STEEL" wraps to a
+                      // shorter block on a phone instead of being pushed off
+                      // the top of the small card. Desktop sizing (2.6vw) is
+                      // unchanged - the floor only bites below ~690px.
+                      fontSize: "clamp(18px,2.6vw,42px)",
+                      lineHeight: 1.05,
+                      letterSpacing: "-0.038em",
+                    }}
                   >
                     {c.name}
                   </h3>
@@ -178,16 +187,44 @@ export default function Work() {
                   </span>
                 </div>
 
-                {/* Revealed only once the card is lifted to the front. */}
+                {/*
+                  Always on the card face - on every screen, and the reason the
+                  title is now readable on a phone. The sector line and this
+                  short description sit here rather than in the detail block
+                  below, which is hidden (and out of flow) until the card is
+                  opened, so on a small card they no longer get shoved off the
+                  top by the collapsed detail's reserved height.
+                */}
+                <p className="type-mono-tight m-0" style={{ color: COLORS.accentPale }}>
+                  {`${c.sector} · ${c.year}`}
+                </p>
+                <p
+                  className="m-0 font-light"
+                  style={{
+                    fontSize: "clamp(13px,1.1vw,16px)",
+                    lineHeight: 1.5,
+                    color: COLORS.mist,
+                    maxWidth: "46ch",
+                    // Never let the description run more than two lines on the
+                    // card face; it keeps the title, meta and blurb inside the
+                    // card height on the smallest panels.
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {c.blurb}
+                </p>
+
+                {/* Revealed only once the card is lifted to the front. Hidden
+                    with display:none so it reserves no space on the collapsed
+                    card; work.ts flips it on when the card opens. */}
                 <div
                   data-panel-detail
-                  className="flex flex-col gap-3 opacity-0"
+                  className="hidden flex-col gap-3 opacity-0"
                   style={{ transform: "translateY(14px)", maxWidth: "62ch" }}
                 >
-                  <p className="type-mono-tight m-0" style={{ color: COLORS.accentPale }}>
-                    {`${c.sector} · ${c.year}`}
-                  </p>
-
                   <p
                     className="m-0 font-light"
                     style={{ fontSize: "clamp(14px,1.2vw,17px)", lineHeight: 1.6, color: COLORS.mist }}
@@ -268,7 +305,7 @@ export default function Work() {
               </h3>
               <div
                 data-panel-detail
-                className="flex flex-col gap-2 opacity-0"
+                className="hidden flex-col gap-2 opacity-0"
                 style={{ transform: "translateY(14px)" }}
               >
                 <p
